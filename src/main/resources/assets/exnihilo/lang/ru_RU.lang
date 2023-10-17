@@ -21,8 +21,8 @@ exnihilo.sieve.jungle.name=Сито из тропической древесин
 exnihilo.sieve.acacia.name=Сито из акации
 exnihilo.sieve.dark_oak.name=Сито из тёмного дуба
 
-exnihilo.gravel_nether.name=Измельчённый камень Нижнего мира
-exnihilo.gravel_ender.name=Измельчённый камень Края
+exnihilo.gravel_nether.name=Измельчённый адский камень
+exnihilo.gravel_ender.name=Измельчённый эндерняк
 
 exnihilo.iron_gravel.name=Железная гравиевая руда
 exnihilo.nether_iron_gravel.name=Железная гравиевая руда
@@ -76,7 +76,7 @@ exnihilo.seed_grass.name=Семена травы
 exnihilo.stone.name=Камень
 exnihilo.porcelain.name=Фарфоровая глина
 exnihilo.silkworm_cooked.name=Приготовленный тутовый шелкопряд
-exnihilo.crook_bone.name=Костный посох
+exnihilo.crook_bone.name=Костяной посох
 
 exnihilo.iron_broken.name=Разбитая железная руда
 exnihilo.iron_crushed.name=Измельчённая железная руда
@@ -103,6 +103,7 @@ exnihilo.lead_ingot.name=Свинцовый слиток
 exnihilo.osmium_broken.name=Разбитая осмиевая руда
 exnihilo.osmium_crushed.name=Измельчённая осмиевая руда
 exnihilo.osmium_powdered.name=Порошкообразная осмиевая руда
+exnihilo.osmium_ingot.name=Осмиевый слиток
 exnihilo.platinum_broken.name=Разбитая платиновая руда
 exnihilo.platinum_crushed.name=Измельчённая платиновая руда
 exnihilo.platinum_powdered.name=Порошкообразная платиновая руда
@@ -135,14 +136,14 @@ exnihilo.seed_cactus.name=Семена кактуса
 exnihilo.seed_sugar_cane.name=Семена тростника
 exnihilo.seed_carrot.name=Семена моркови
 exnihilo.seed_potato.name=Семена картофеля
-exnihilo.seed_rubber.name=Семена каучукового дерева
+exnihilo.seed_rubber.name=Семена гевеи
 
 exnihilo.doll.name=Драгоценная куколка
 exnihilo.doll_angry.name=Злая куколка
 exnihilo.doll_creepy.name=Жуткая куколка
 
-exnihilo.bucket_witchwater.name=Ведро воды ведьмы
-exnihilo.witchwater.name=Вода ведьмы
-fluid.witchwater=Вода ведьмы
+exnihilo.bucket_witchwater.name=Ведро ведьминой воды
+exnihilo.witchwater.name=Ведьмина вода
+fluid.witchwater=Ведьмина вода
 
 item.ice_shard.name=Осколок льда
