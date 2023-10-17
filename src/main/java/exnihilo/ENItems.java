@@ -1,8 +1,6 @@
 package exnihilo;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import exnihilo.items.ItemCrook;
-import exnihilo.items.ItemCrookBone;
 import exnihilo.items.ItemGrassSeeds;
 import exnihilo.items.ItemMesh;
 import exnihilo.items.ItemPorcelainBall;
@@ -10,6 +8,8 @@ import exnihilo.items.ItemSilkworm;
 import exnihilo.items.ItemSilkwormCooked;
 import exnihilo.items.ItemSpores;
 import exnihilo.items.ItemStone;
+import exnihilo.items.crooks.CrookType;
+import exnihilo.items.crooks.ItemCrook;
 import exnihilo.items.dolls.ItemDoll;
 import exnihilo.items.dolls.ItemDollAngry;
 import exnihilo.items.dolls.ItemDollCreepy;
@@ -38,7 +38,15 @@ public class ENItems {
 
   public static Item HammerDiamond;
 
-  public static Item Crook;
+  public static Item CrookWood;
+
+  public static Item CrookStone;
+
+  public static Item CrookIron;
+
+  public static Item CrookGold;
+
+  public static Item CrookDiamond;
 
   public static Item CrookBone;
 
@@ -95,9 +103,17 @@ public class ENItems {
     GameRegistry.registerItem(HammerGold, HammerType.GOLD.getName());
     HammerDiamond = new ItemHammer(HammerType.DIAMOND);
     GameRegistry.registerItem(HammerDiamond, HammerType.DIAMOND.getName());
-    Crook = new ItemCrook();
-    GameRegistry.registerItem(Crook, "crook");
-    CrookBone = new ItemCrookBone();
+    CrookWood = new ItemCrook(CrookType.WOOD);
+    GameRegistry.registerItem(CrookWood, "crook");
+    CrookStone = new ItemCrook(CrookType.STONE);
+    GameRegistry.registerItem(CrookStone, "crook_stone");
+    CrookIron = new ItemCrook(CrookType.IRON);
+    GameRegistry.registerItem(CrookIron, "crook_iron");
+    CrookGold = new ItemCrook(CrookType.GOLD);
+    GameRegistry.registerItem(CrookGold, "crook_gold");
+    CrookDiamond = new ItemCrook(CrookType.DIAMOND);
+    GameRegistry.registerItem(CrookDiamond, "crook_diamond");
+    CrookBone = new ItemCrook(CrookType.BONE);
     GameRegistry.registerItem(CrookBone, "crook_bone");
     Silkworm = new ItemSilkworm();
     GameRegistry.registerItem(Silkworm, "silkworm");

@@ -40,9 +40,13 @@ public class Recipes {
                 'x', Items.diamond, 'y', "stickWood"));
         }
         if (ModData.ALLOW_CROOKS) {
-            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.Crook, 1, 0), "xx ", " x ", " x ",
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.CrookWood, 1, 0), "xx ", " x ", " x ",
 
                 'x', "stickWood"));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.CrookStone, 1, 0), "xx ", " x ", " x ", 'x', new ItemStack(Blocks.stone, 1, 0)));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.CrookIron, 1, 0), "xx ", " x ", " x ", 'x', Items.iron_ingot));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.CrookGold, 1, 0), "xx ", " x ", " x ", 'x', Items.gold_ingot));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.CrookDiamond, 1, 0), "xx ", " x ", " x ", 'x', Items.diamond));
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.CrookBone, 1, 0), "xx ", " x ", " x ",
 
                 'x', Items.bone));

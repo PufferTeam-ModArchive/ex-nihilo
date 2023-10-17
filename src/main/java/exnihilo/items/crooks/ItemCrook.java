@@ -1,8 +1,6 @@
-package exnihilo.items;
+package exnihilo.items.crooks;
 
 import com.google.common.collect.Sets;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import exnihilo.data.ModData;
 import exnihilo.proxies.Proxy;
 import exnihilo.utils.CrookUtils;
@@ -14,10 +12,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -28,13 +24,13 @@ public class ItemCrook extends ItemTool {
 
   public static final Set<Object> blocksEffectiveAgainst = Sets.newHashSet(new Block[0]);
 
-  public ItemCrook() {
-    super(0.0F, Item.ToolMaterial.WOOD, blocksEffectiveAgainst);
-    setMaxDamage(getMaxDamage() * 2);
-  }
+  private final CrookType type;
 
-  public ItemCrook(Item.ToolMaterial mat) {
-    super(0.0F, mat, blocksEffectiveAgainst);
+  public ItemCrook(CrookType type) {
+
+      super(0.0F, type.getMaterial(), blocksEffectiveAgainst);
+      this.type = type;
+      setMaxDamage(type.getDurability());
   }
 
   public boolean canItemHarvestBlock(Block block) {
@@ -94,19 +90,12 @@ public class ItemCrook extends ItemTool {
     return false;
   }
 
-  @Override
-  public String getUnlocalizedName() {
-    return "exnihilo.crook";
-  }
+    @Override
+    public String getUnlocalizedName() { return "exnihilo." + type.getName(); }
 
-  @Override
-  public String getUnlocalizedName(ItemStack item) {
-    return "exnihilo.crook";
-  }
+    @Override
+    public String getUnlocalizedName(ItemStack item) { return "exnihilo." + type.getName(); }
 
-  @Override
-  @SideOnly(Side.CLIENT)
-  public void registerIcons(IIconRegister register) {
-    this.itemIcon = register.registerIcon("exnihilo:Crook");
-  }
+    @Override
+    public void registerIcons(IIconRegister register) { this.itemIcon = register.registerIcon("exnihilo:" + type.getName()); }
 }

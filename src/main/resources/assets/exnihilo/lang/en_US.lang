@@ -70,12 +70,16 @@ exnihilo.hammer_gold.name=Gold Hammer
 exnihilo.hammer_diamond.name=Diamond Hammer
 exnihilo.mesh.name=Silk Mesh
 exnihilo.silkworm.name=Silkworm
-exnihilo.crook.name=Crook
 exnihilo.spores.name=Ancient Spores
 exnihilo.seed_grass.name=Grass Seeds
 exnihilo.stone.name=Stone
 exnihilo.porcelain.name=Porcelain Clay
 exnihilo.silkworm_cooked.name=Cooked Silkworm
+exnihilo.crook_wood.name=Wood Crook
+exnihilo.crook_stone.name=Stone Crook
+exnihilo.crook_iron.name=Iron Crook
+exnihilo.crook_gold.name=Gold Crook
+exnihilo.crook_diamond.name=Diamond Crook
 exnihilo.crook_bone.name=Bone Crook
 
 exnihilo.iron_broken.name=Broken Iron Ore
