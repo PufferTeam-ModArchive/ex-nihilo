@@ -30,11 +30,9 @@
  */
 dependencies {
     api("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
-    api("com.github.GTNewHorizons:waila:1.5.23:dev")
-    api("com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-156-GTNH:dev")
-    api("com.github.GTNewHorizons:ForestryMC:4.5.6:dev")
-    api("com.github.GTNewHorizons:TinkersConstruct:1.9.19-GTNH:dev")
-
-
-
+    api("com.github.GTNewHorizons:waila:1.6.0:dev")
+    api("com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-262-GTNH:dev")
+    api("com.github.GTNewHorizons:ForestryMC:4.6.14:dev")
+    api("com.github.GTNewHorizons:TinkersConstruct:1.10.8-GTNH:dev")
+    api("com.github.GTNewHorizons:NotEnoughItems:2.4.5-GTNH:dev")
 }
