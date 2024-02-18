@@ -1,36 +1,37 @@
 package exnihilo.blocks;
 
-import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import exnihilo.blocks.tileentities.TileEntitySieve;
-import exnihilo.blocks.tileentities.TileEntitySieve.SieveMode;
 import exnihilo.data.BlockData;
 import exnihilo.data.ModData;
+import exnihilo.items.meshes.ItemMesh;
+import exnihilo.items.meshes.MeshType;
 import exnihilo.registries.SieveRegistry;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import exnihilo.registries.helpers.SiftingResult;
+import exnihilo.utils.BlockInfo;
+import exnihilo.utils.ItemInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class BlockSieve extends BlockContainer {
     public static final int SIEVE_RADIUS = 1;
-    public static IIcon meshIcon;
 
     public BlockSieve() {
         super(Material.wood);
@@ -46,8 +47,10 @@ public class BlockSieve extends BlockContainer {
 
     @Override
     public void registerBlockIcons(IIconRegister register) {
+        for (MeshType mesh : MeshType.getValues()) {
+            mesh.registerMeshRenderIcon(register);
+        }
         this.blockIcon = Blocks.planks.getIcon(0, 0);
-        meshIcon = register.registerIcon(ModData.TEXTURE_LOCATION + ":" + "IconSieveMesh");
     }
 
     @Override
@@ -90,47 +93,63 @@ public class BlockSieve extends BlockContainer {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-        if (player == null) return false;
-        final PlayerInteractEvent e = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, world);
-        if (MinecraftForge.EVENT_BUS.post(e) || e.getResult() == Event.Result.DENY || e.useBlock == Event.Result.DENY)
+        if (world.isRemote)
+            return true;
+
+        if (!isHuman(player) && !ModData.ALLOW_SIEVE_AUTOMATION)
             return false;
 
+        TileEntitySieve sieve = (TileEntitySieve) world.getTileEntity(x, y, z);
 
+        if (sieve == null)
+            return true;
 
-        final TileEntitySieve sieve = (TileEntitySieve) world.getTileEntity(x, y, z);
         ItemStack held = player.getCurrentEquippedItem();
-        if (sieve.mode == SieveMode.EMPTY && held != null) {
-            if (SieveRegistry.registered(Block.getBlockFromItem(held.getItem()), held.getItemDamage())) {
-                sieve.addSievable(Block.getBlockFromItem(held.getItem()), held.getItemDamage());
-                held = removeCurrentItem(player);
 
-                outerloop: // Labeling the for loop, not where to break to.
-                for(int dx= -SIEVE_RADIUS ; dx <= SIEVE_RADIUS ; dx++) {
-                    for(int dz = -SIEVE_RADIUS ; dz <= SIEVE_RADIUS ; dz++ ) {
-                        if(held == null)
-                            break outerloop; // Ran out of Items
-                        final TileEntity otherTE = world.getTileEntity(x + dx, y, z + dz);
-                        if(!(otherTE instanceof TileEntitySieve otherSieve))
-                            continue; // Not a sieve
+        if (!ModData.LEGACY_SIEVE) {
+            if (held == null && sieve.getMeshType() != MeshType.NONE && player.isSneaking() && sieve.getCurrentStack() == BlockInfo.EMPTY) {
+                EntityItem entityItem = new EntityItem(world, sieve.xCoord + 0.5D, sieve.yCoord + 1.5D, sieve.zCoord + 0.5D, new ItemStack(MeshType.getItemForType(sieve.getMeshType()), 1, 0));
+                sieve.setMeshType(MeshType.NONE);
+                world.spawnEntityInWorld(entityItem);
+                return true;
+            }
+        }
 
-                        if (otherSieve.mode == SieveMode.EMPTY) {
-                            otherSieve.addSievable(Block.getBlockFromItem(held.getItem()), held.getItemDamage());
-                            held = removeCurrentItem(player);
+        if (sieve.getCurrentStack() == BlockInfo.EMPTY && held != null) {
+            //Handle inserting mesh
+            if (sieve.getMeshType() == MeshType.NONE && held.getItem() instanceof ItemMesh) {
+                sieve.setMeshType(((ItemMesh) held.getItem()).getType());
+                removeCurrentItem(player);
+                return true;
+            }
+            if (sieve.getMeshType() == MeshType.NONE)
+                return true;
+            ArrayList<SiftingResult> result = SieveRegistry.getSiftingOutput(new ItemInfo(held), sieve.getMeshType());
+            if (result != null) {
+                    outerloop:
+                    for (int dx = -SIEVE_RADIUS; dx <= SIEVE_RADIUS; dx++) {
+                        for (int dz = -SIEVE_RADIUS; dz <= SIEVE_RADIUS; dz++) {
+                            if (held == null)
+                                break outerloop; // ran out of items
+                            final TileEntity otherTE = world.getTileEntity(x + dx, y, z + dz);
+                            if (!(otherTE instanceof TileEntitySieve otherSieve))
+                                continue; // Not a sieve
+
+                            if (otherSieve.getCurrentStack() == BlockInfo.EMPTY && otherSieve.getMeshType() == sieve.getMeshType()) {
+                                otherSieve.addSievable(Block.getBlockFromItem(held.getItem()), held.getItemDamage());
+                                held = removeCurrentItem(player);
+                            }
                         }
-
                     }
-                }
             }
             return true;
         }
-        final int progress = sieve.getProgress();
-        if (world.isRemote || isHuman(player) || ModData.ALLOW_SIEVE_AUTOMATION) {
-            for (int dx = -SIEVE_RADIUS; dx <= SIEVE_RADIUS; dx++) {
-                for (int dz = -SIEVE_RADIUS; dz <= SIEVE_RADIUS; dz++) {
-                    final TileEntity te = world.getTileEntity(x + dx, y, z + dz);
-                    if ((te instanceof TileEntitySieve teSieve) && teSieve.mode == SieveMode.FILLED && teSieve.getProgress() == progress) {
-                        teSieve.ProcessContents(false);
-                    }
+
+        for (int dx = -SIEVE_RADIUS; dx <= SIEVE_RADIUS; dx++) {
+            for (int dz = -SIEVE_RADIUS; dz <= SIEVE_RADIUS; dz++) {
+                final TileEntity te = world.getTileEntity(x + dx, y, z + dz);
+                if ((te instanceof TileEntitySieve teSieve) && teSieve.getCurrentStack() != BlockInfo.EMPTY && teSieve.getMeshType() == sieve.getMeshType()) {
+                    teSieve.ProcessContents();
                 }
             }
         }

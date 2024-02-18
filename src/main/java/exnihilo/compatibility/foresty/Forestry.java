@@ -35,7 +35,7 @@ public class Forestry {
   private static void registerRecipes() {
     GameRegistry.addShapelessRecipe(new ItemStack(ENBlocks.BeeTrap, 1, 0),
         new ItemStack(Blocks.hay_block, 1, 0),
-        new ItemStack(ENItems.Mesh, 1, 0));
+        new ItemStack(ENItems.MeshSilk, 1, 0));
     ExNihilo.log.info("Recipes sucessfully added");
   }
 }

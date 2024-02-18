@@ -2,7 +2,7 @@ package exnihilo;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import exnihilo.items.ItemGrassSeeds;
-import exnihilo.items.ItemMesh;
+import exnihilo.items.meshes.ItemMesh;
 import exnihilo.items.ItemPorcelainBall;
 import exnihilo.items.ItemSilkworm;
 import exnihilo.items.ItemSilkwormCooked;
@@ -15,6 +15,7 @@ import exnihilo.items.dolls.ItemDollAngry;
 import exnihilo.items.dolls.ItemDollCreepy;
 import exnihilo.items.hammers.HammerType;
 import exnihilo.items.hammers.ItemHammer;
+import exnihilo.items.meshes.MeshType;
 import exnihilo.items.seeds.ItemSeedAcacia;
 import exnihilo.items.seeds.ItemSeedBirch;
 import exnihilo.items.seeds.ItemSeedCactus;
@@ -54,7 +55,13 @@ public class ENItems {
 
   public static Item SilkwormCooked;
 
-  public static Item Mesh;
+  public static Item MeshSilk;
+
+  public static Item MeshFlint;
+
+  public static Item MeshIron;
+
+  public static Item MeshDiamond;
 
   public static Item Stones;
 
@@ -117,8 +124,14 @@ public class ENItems {
     GameRegistry.registerItem(CrookBone, "crook_bone");
     Silkworm = new ItemSilkworm();
     GameRegistry.registerItem(Silkworm, "silkworm");
-    Mesh = new ItemMesh();
-    GameRegistry.registerItem(Mesh, "mesh");
+    MeshSilk = new ItemMesh(MeshType.SILK);
+    GameRegistry.registerItem(MeshSilk, "mesh");
+    MeshFlint = new ItemMesh(MeshType.FLINT);
+    GameRegistry.registerItem(MeshFlint, MeshType.FLINT.getName());
+    MeshIron = new ItemMesh(MeshType.IRON);
+    GameRegistry.registerItem(MeshIron, MeshType.IRON.getName());
+    MeshDiamond = new ItemMesh(MeshType.DIAMOND);
+    GameRegistry.registerItem(MeshDiamond, MeshType.DIAMOND.getName());
     Spores = new ItemSpores();
     GameRegistry.registerItem(Spores, "spores");
     GrassSeeds = new ItemGrassSeeds();

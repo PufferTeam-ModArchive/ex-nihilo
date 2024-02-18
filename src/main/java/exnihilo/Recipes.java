@@ -51,13 +51,25 @@ public class Recipes {
 
                 'x', Items.bone));
         }
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.Mesh, 1, 0), "xxx", "xxx", "xxx",
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.MeshSilk, 1, 0), "xxx", "xxx", "xxx",
 
             'x', Items.string));
+        if (!ModData.LEGACY_SIEVE) {
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.MeshFlint, 1, 0), "xxx", "xyx", "xxx",
+                'x', Items.flint, 'y', ENItems.MeshSilk));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.MeshIron, 1, 0), "xxx", "xyx", "xxx",
+                'x', Items.iron_ingot, 'y', ENItems.MeshFlint));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENItems.MeshDiamond, 1, 0), "xxx", "xyx", "xxx",
+                'x', Items.diamond, 'y', ENItems.MeshIron));
+        }
         if (ModData.ALLOW_SIEVES) for (int i = 0; i < 6; i++) {
-            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENBlocks.Sieve, 1, i), "xzx", "xzx", "y y",
+            if (!ModData.LEGACY_SIEVE)
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENBlocks.Sieve, 1, i), "x x", "xzx", "y y",
 
-                'x', new ItemStack(Blocks.planks, 1, i), 'y', "stickWood", 'z', ENItems.Mesh));
+                    'x', new ItemStack(Blocks.planks, 1, i), 'y', "stickWood", 'z', new ItemStack(Blocks.wooden_slab, 1, i)));
+            else
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ENBlocks.Sieve, 1, i), "xzx", "xzx", "y y",
+                    'x', new ItemStack(Blocks.planks, 1, i), 'y', "stickWood", 'z', new ItemStack(ENItems.MeshSilk, 1, i)));
         }
         GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ENItems.Porcelain, 1, 0),
             new ItemStack(Items.clay_ball, 1, 0),

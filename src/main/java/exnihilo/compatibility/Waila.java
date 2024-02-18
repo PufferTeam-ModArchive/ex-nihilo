@@ -11,6 +11,8 @@ import exnihilo.blocks.tileentities.TileEntityLeavesInfested;
 import exnihilo.blocks.tileentities.TileEntitySieve;
 import java.text.DecimalFormat;
 import java.util.List;
+
+import exnihilo.utils.BlockInfo;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
@@ -130,7 +132,7 @@ public class Waila implements IWailaDataProvider {
   }
 
   public String getSieveDisplay(TileEntitySieve sieve) {
-    if (sieve.mode == TileEntitySieve.SieveMode.EMPTY)
+    if (sieve.getCurrentStack() == BlockInfo.EMPTY)
       return "Empty";
     return Math.round(getSieveClicksRemaining(sieve)) + "% left";
   }
@@ -148,7 +150,7 @@ public class Waila implements IWailaDataProvider {
   }
 
   public float getSieveClicksRemaining(TileEntitySieve sieve) {
-    return sieve.getVolume() / 1.0F * 100.0F;
+    return (1.0F - sieve.getProgress()) * 100.0F;
   }
 
   public static void callbackRegister(IWailaRegistrar registrar) {

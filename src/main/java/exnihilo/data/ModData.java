@@ -55,6 +55,10 @@ public class ModData {
 
   public static boolean ALLOW_SIEVE_AUTOMATION = false;
 
+  public static final String LEGACY_SIEVE_KEY = "enable legacy sieve(only sieve mesh)";
+
+  public static boolean LEGACY_SIEVE = false;
+
   public static final String CATEGORY_OPTIONS_BARREL = "barrel options";
 
   public static final String ALLOW_BARREL_RECIPE_DIRT_KEY = "enable barrel recipe (dirt)";
@@ -150,6 +154,7 @@ public class ModData {
     ALLOW_BARRELS = config.get(CATEGORY_OPTIONS, ALLOW_BARRELS_KEY, ALLOW_BARRELS).getBoolean(ALLOW_BARRELS);
     ALLOW_SIEVES = config.get(CATEGORY_OPTIONS, ALLOW_SIEVES_KEY, ALLOW_SIEVES).getBoolean(ALLOW_SIEVES);
     ALLOW_SIEVE_AUTOMATION = config.get(CATEGORY_OPTIONS, ALLOW_SIEVE_AUTOMATION_KEY, ALLOW_SIEVE_AUTOMATION).getBoolean(ALLOW_SIEVE_AUTOMATION);
+    LEGACY_SIEVE = config.get(CATEGORY_OPTIONS, LEGACY_SIEVE_KEY, LEGACY_SIEVE).getBoolean(LEGACY_SIEVE);
     ALLOW_CRUCIBLES = config.get(CATEGORY_OPTIONS, ALLOW_CRUCIBLES_KEY, ALLOW_CRUCIBLES).getBoolean(ALLOW_CRUCIBLES);
     ALLOW_HAMMERS = config.get(CATEGORY_OPTIONS, ALLOW_HAMMERS_KEY, ALLOW_HAMMERS).getBoolean(ALLOW_HAMMERS);
     ALLOW_CROOKS = config.get(CATEGORY_OPTIONS, ALLOW_CROOKS_KEY, ALLOW_CROOKS).getBoolean(ALLOW_CROOKS);

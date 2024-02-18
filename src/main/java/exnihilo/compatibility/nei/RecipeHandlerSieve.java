@@ -5,22 +5,27 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import exnihilo.items.meshes.ItemMesh;
+import exnihilo.items.meshes.MeshType;
 import exnihilo.registries.SieveRegistry;
 import exnihilo.registries.helpers.SiftingResult;
 import exnihilo.utils.ItemInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 public class RecipeHandlerSieve extends TemplateRecipeHandler {
-  private static final int SLOTS_PER_PAGE = 45;
+
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
   public class CachedSieveRecipe extends TemplateRecipeHandler.CachedRecipe {
     private final List<PositionedStack> input = new ArrayList<>();
@@ -28,10 +33,6 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
     private final List<PositionedStack> outputs = new ArrayList<>();
 
     public Point focus;
-
-    public CachedSieveRecipe(List<ItemStack> variations) {
-      this(variations, null, null);
-    }
 
     @Override
     public List<PositionedStack> getIngredients() {
@@ -48,19 +49,22 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
       return null;
     }
 
-    public CachedSieveRecipe(List<ItemStack> variations, ItemStack base, ItemStack focus) {
+    public CachedSieveRecipe(List<ItemStack> variations, MeshType meshType, ItemStack base, ItemStack focus) {
       super();
-      PositionedStack pstack = new PositionedStack((base != null) ? base : variations, 74, 4);
-      pstack.setMaxSize(1);
-      this.input.add(pstack);
+      PositionedStack pstack_item = new PositionedStack((base != null) ? base : variations, 11, 3);
+      PositionedStack pstack_mesh = new PositionedStack(new ItemStack(MeshType.getItemForType(meshType), 1, 0), 11, 39);
+      pstack_item.setMaxSize(1);
+      pstack_mesh.setMaxSize(1);
+      this.input.add(pstack_item);
+      this.input.add(pstack_mesh);
       int row = 0;
       int col = 0;
       for (ItemStack v : variations) {
-        this.outputs.add(new PositionedStack(v, 3 + 18 * col, 37 + 18 * row));
+        this.outputs.add(new PositionedStack(v, 39 + 18 * col, 3 + 18 * row));
         if (focus != null && NEIServerUtils.areStacksSameTypeCrafting(focus, v))
-          this.focus = new Point(2 + 18 * col, 36 + 18 * row);
+          this.focus = new Point(38 + 18 * col, 2 + 18 * row);
         col++;
-        if (col > 8) {
+        if (col > 6) {
           col = 0;
           row++;
         }
@@ -70,7 +74,7 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
 
   @Override
   public String getRecipeName() {
-    return "Ex Nihilo Sieve";
+    return "Sieve";
   }
 
   @Override
@@ -78,16 +82,16 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
     return "exnihilo:textures/sieveNEI.png";
   }
 
-  private void addCached(List<ItemStack> variations, ItemStack base, ItemStack focus) {
-    if (variations.size() > 45) {
+  private void addCached(List<ItemStack> variations, MeshType meshType, ItemStack base, ItemStack focus) {
+    if (variations.size() > 21) {
       List<List<ItemStack>> parts = new ArrayList<>();
       int size = variations.size();
-      for (int i = 0; i < size; i += 45)
-        parts.add(new ArrayList<>(variations.subList(i, Math.min(size, i + 45))));
+      for (int i = 0; i < size; i += 21)
+        parts.add(new ArrayList<>(variations.subList(i, Math.min(size, i + 21))));
       for (List<ItemStack> part : parts)
-        this.arecipes.add(new CachedSieveRecipe(part, base, focus));
+        this.arecipes.add(new CachedSieveRecipe(part, meshType, base, focus));
     } else {
-      this.arecipes.add(new CachedSieveRecipe(variations, base, focus));
+      this.arecipes.add(new CachedSieveRecipe(variations, meshType, base, focus));
     }
   }
 
@@ -95,7 +99,7 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
   public void drawBackground(int recipeIndex) {
     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     GuiDraw.changeTexture(getGuiTexture());
-    GuiDraw.drawTexturedModalRect(0, 0, 0, 0, 166, 130);
+    GuiDraw.drawTexturedModalRect(0, 0, 0, 0, 166, 56);
     Point focus = ((CachedSieveRecipe)this.arecipes.get(recipeIndex)).focus;
     if (focus != null)
       GuiDraw.drawTexturedModalRect(focus.x, focus.y, 166, 0, 18, 18);
@@ -103,24 +107,28 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
 
   @Override
   public int recipiesPerPage() {
-    return 1;
+    return 4;
   }
 
   @Override
   public void loadTransferRects() {
-    this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(75, 22, 15, 13), "exnihilo.sieve"));
-  }
+      this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(18, 22, 18, 14), "exnihilo.sieve"));
+ }
 
   @Override
   public void loadCraftingRecipes(String outputID, Object... results) {
     if (outputID.equals("exnihilo.sieve")) {
-      for (ItemInfo ii : SieveRegistry.getSiftables().keySet()) {
-        ItemStack inputStack = ii.getStack();
-        ArrayList<ItemStack> resultStack = new ArrayList<>();
-        for (SiftingResult s : SieveRegistry.getSiftingOutput(ii))
-          resultStack.add(new ItemStack(s.item, 1, s.meta));
-        addCached(resultStack, inputStack, null);
-      }
+        for (MeshType meshType : MeshType.getValues()) {
+            if (meshType == MeshType.NONE)
+                continue;
+            for (ItemInfo ii : SieveRegistry.getSiftables().get(meshType).keySet()) {
+                ItemStack inputStack = ii.getStack();
+                ArrayList<ItemStack> resultStacks = new ArrayList<>();
+                for (SiftingResult s : SieveRegistry.getSiftingOutput(ii, meshType))
+                    resultStacks.add(new ItemStack(s.drop.getItem(), 1, s.drop.getMeta()));
+                addCached(resultStacks, meshType, inputStack, null);
+            }
+        }
     } else {
       super.loadCraftingRecipes(outputID, results);
     }
@@ -128,77 +136,72 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
 
   @Override
   public void loadCraftingRecipes(ItemStack result) {
-    HashSet<ItemInfo> completed = new HashSet<>();
-    for (ItemInfo ii : SieveRegistry.getSources(result)) {
-      if (!completed.contains(ii)) {
-        HashMap<ItemInfo, Integer> stored = new HashMap<>();
-        for (SiftingResult results : SieveRegistry.getSiftingOutput(Block.getBlockFromItem(ii.getItem()), ii.getMeta())) {
-          ItemInfo current = new ItemInfo(results.item, results.meta);
-          if (stored.containsKey(current)) {
-            stored.put(current, stored.get(current) + 1);
-            continue;
+      for (Map.Entry<MeshType, ArrayList<ItemInfo>> set : SieveRegistry.getSources(result).entrySet()) {
+          for (ItemInfo ii : set.getValue()) {
+              HashMap<ItemInfo, Integer> stored = new HashMap<>();
+              for (SiftingResult results : SieveRegistry.getSiftingOutput(Block.getBlockFromItem(ii.getItem()), ii.getMeta(), set.getKey())) {
+                  ItemInfo current = new ItemInfo(results.drop.getItem(), results.drop.getMeta());
+                  if (stored.containsKey(current)) {
+                      stored.put(current, stored.get(current) + 1);
+                      continue;
+                  }
+                  stored.put(current, 1);
+              }
+              ArrayList<ItemStack> resultStacks = new ArrayList<>();
+              for (ItemInfo info : stored.keySet()) {
+                  ItemStack stack = info.getStack();
+                  stack.stackSize = stored.get(info);
+                  resultStacks.add(stack);
+              }
+              addCached(resultStacks, set.getKey(), ii.getStack(), result);
           }
-          stored.put(current, 1);
-        }
-        ArrayList<ItemStack> resultVars = new ArrayList<>();
-        for (ItemInfo info : stored.keySet()) {
-          ItemStack stack = info.getStack();
-          stack.stackSize = stored.get(info);
-          resultVars.add(stack);
-        }
-        addCached(resultVars, ii.getStack(), result);
-        completed.add(ii);
       }
-    }
   }
 
   @Override
   public void loadUsageRecipes(ItemStack ingredient) {
-    HashMap<ItemInfo, Integer> stored = new HashMap<>();
-    if (Block.getBlockFromItem(ingredient.getItem()) == Blocks.air)
-      return;
-    if (!SieveRegistry.registered(Block.getBlockFromItem(ingredient.getItem()), ingredient.getItemDamage()))
-      return;
-    for (SiftingResult results : SieveRegistry.getSiftingOutput(Block.getBlockFromItem(ingredient.getItem()), ingredient.getItemDamage())) {
-      ItemInfo current = new ItemInfo(results.item, results.meta);
-      if (stored.containsKey(current)) {
-        stored.put(current, stored.get(current) + 1);
-        continue;
+      if (Block.getBlockFromItem(ingredient.getItem()) == Blocks.air)
+          return;
+      for (MeshType meshType : MeshType.getValues()) {
+          HashMap<ItemInfo, Integer> stored = new HashMap<>();
+          if (!SieveRegistry.registered(Block.getBlockFromItem(ingredient.getItem()), ingredient.getItemDamage(), meshType))
+              continue;
+          for (SiftingResult results : SieveRegistry.getSiftingOutput(Block.getBlockFromItem(ingredient.getItem()), ingredient.getItemDamage(), meshType)) {
+              ItemInfo current = results.drop;
+              if (stored.containsKey(current)) {
+                  stored.put(current, stored.get(current) + 1);
+                  continue;
+              }
+              stored.put(current, 1);
+          }
+          ArrayList<ItemStack> resultStacks = new ArrayList<>();
+          for (ItemInfo info : stored.keySet()) {
+              ItemStack stack = info.getStack();
+              stack.stackSize = stored.get(info);
+              resultStacks.add(stack);
+          }
+          addCached(resultStacks, meshType, ingredient, ingredient);
       }
-      stored.put(current, 1);
-    }
-    ArrayList<ItemStack> resultVars = new ArrayList<>();
-    for (ItemInfo info : stored.keySet()) {
-      ItemStack stack = info.getStack();
-      stack.stackSize = stored.get(info);
-      resultVars.add(stack);
-    }
-    addCached(resultVars, ingredient, ingredient);
-  }
-
-  private void addCached(List<ItemStack> variations) {
-    addCached(variations, null, null);
   }
 
   @Override
   public List<String> handleItemTooltip(GuiRecipe<?> guiRecipe, ItemStack itemStack, List<String> currenttip, int recipe) {
-    super.handleItemTooltip(guiRecipe, itemStack, currenttip, recipe);
     CachedSieveRecipe crecipe = (CachedSieveRecipe)this.arecipes.get(recipe);
     Point mouse = GuiDraw.getMousePosition();
     Point offset = guiRecipe.getRecipePosition(recipe);
-    Point relMouse = new Point(mouse.x - (guiRecipe.width - 176) / 2 - offset.x, mouse.y - (guiRecipe.height - 166) / 2 - offset.y);
-    if (itemStack != null && relMouse.y > 34) {
-      currenttip.add("Drop Chance:");
-      ItemStack sourceStack = (crecipe.input.get(0)).item;
-      Block inBlock = Block.getBlockFromItem(sourceStack.getItem());
-      int meta = sourceStack.getItemDamage();
-      for (SiftingResult smash : SieveRegistry.getSiftingOutput(inBlock, meta)) {
-        if (NEIServerUtils.areStacksSameTypeCrafting(itemStack, new ItemStack(smash.item, 1, smash.meta))) {
-          int chance = (int)Math.round(100.0D / smash.rarity);
-          currenttip.add("  * " + chance + "%");
+    Point relMouse = new Point(mouse.x - (guiRecipe.width - 166) / 2 - offset.x, mouse.y - (guiRecipe.height - (56 * this.recipiesPerPage())) / 2 - offset.y);
+    if (itemStack != null && relMouse.x > 32 && mouse.y > offset.y + 32 && mouse.y < (((guiRecipe.height - (56 * this.recipiesPerPage())) / 2 + offset.y) + 56) + 32) {
+        currenttip.add("Drop Chance:");
+        ItemStack sourceStack = (crecipe.input.get(0)).item;
+        Block inBlock = Block.getBlockFromItem(sourceStack.getItem());
+        int meta = sourceStack.getItemDamage();
+        for (SiftingResult smash : SieveRegistry.getSiftingOutput(inBlock, meta, ((ItemMesh) crecipe.input.get(1).item.getItem()).getType())) {
+            if (NEIServerUtils.areStacksSameTypeCrafting(itemStack, new ItemStack(smash.drop.getItem(), 1, smash.drop.getMeta()))) {
+                double chance = 100.0D / smash.rarity;
+                currenttip.add("  * " + df.format(chance) + "%");
+            }
         }
-      }
     }
-    return currenttip;
+    return super.handleItemTooltip(guiRecipe, itemStack, currenttip, recipe);
   }
 }

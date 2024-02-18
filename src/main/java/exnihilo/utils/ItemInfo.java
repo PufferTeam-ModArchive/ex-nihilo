@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 import java.util.Objects;
 
 public class ItemInfo {
+
+    public static final ItemInfo EMPTY = new ItemInfo((Item) null, 0);
   private Item item;
 
   private int meta;
@@ -61,13 +63,13 @@ public class ItemInfo {
   }
 
   public ItemInfo(Block block, int meta) {
-    this.item = Item.getItemFromBlock(block);
-    this.meta = meta;
+      this.item = Item.getItemFromBlock(block);
+      this.meta = meta;
   }
 
   public ItemInfo(Item item, int meta) {
-    this.item = item;
-    this.meta = meta;
+      this.item = item;
+      this.meta = meta;
   }
 
   public ItemStack getStack() {

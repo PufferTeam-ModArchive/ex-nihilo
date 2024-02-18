@@ -18,6 +18,7 @@ public class ENPacketHandler {
   public static void init() {
     INSTANCE.registerMessage(MessageCrucibleHandler.class, MessageCrucible.class, nextID(), Side.CLIENT);
     INSTANCE.registerMessage(MessageBarrelHandler.class, MessageBarrel.class, nextID(), Side.CLIENT);
+    INSTANCE.registerMessage(MessageSieveHandler.class, MessageSieve.class, nextID(), Side.CLIENT);
   }
 
   public static void sendToAllAround(IMessage message, TileEntity te, int range) {
@@ -27,4 +28,5 @@ public class ENPacketHandler {
   public static void sendToAllAround(IMessage message, TileEntity te) {
     sendToAllAround(message, te, 64);
   }
+
 }

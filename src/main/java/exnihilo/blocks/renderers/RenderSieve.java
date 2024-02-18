@@ -1,18 +1,17 @@
 package exnihilo.blocks.renderers;
 
-import exnihilo.blocks.BlockSieve;
 import exnihilo.blocks.models.ModelSieve;
 import exnihilo.blocks.models.ModelSieveContents;
 import exnihilo.blocks.models.ModelSieveMesh;
 import exnihilo.blocks.tileentities.TileEntitySieve;
+import exnihilo.items.meshes.MeshType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
-
-import java.util.Objects;
 
 public class RenderSieve extends TileEntitySpecialRenderer {
   private final ModelSieve model;
@@ -44,30 +43,31 @@ public class RenderSieve extends TileEntitySpecialRenderer {
   }
 
   private void renderMesh(TileEntity tileentity, double x, double y, double z, float f) {
-    GL11.glPushMatrix();
-    GL11.glTranslatef((float)x + 0.5F, (float)y + 0.69F, (float)z + 0.5F);
-    bindTexture(TextureMap.locationBlocksTexture);
-    this.mesh.render(BlockSieve.meshIcon);
-    GL11.glPopMatrix();
+      TileEntitySieve sieve = (TileEntitySieve) tileentity;
+      if (sieve.getMeshType() != MeshType.NONE) {
+          GL11.glPushMatrix();
+          GL11.glTranslatef((float) x + 0.5F, (float) y + 0.69F, (float) z + 0.5F);
+          bindTexture(TextureMap.locationBlocksTexture);
+          this.mesh.render(sieve.getMeshType().getMeshRenderIcon());
+          GL11.glPopMatrix();
+      }
   }
 
   private void renderContents(TileEntity tileentity, double x, double y, double z, float f) {
     TileEntitySieve sieve = (TileEntitySieve)tileentity;
-    IIcon icon = null;
-      if (Objects.requireNonNull(sieve.mode) == TileEntitySieve.SieveMode.FILLED) {
-          icon = sieve.content.getIcon(0, sieve.contentMeta);
-      }
-    if (sieve.mode != TileEntitySieve.SieveMode.EMPTY && icon != null) {
-      bindTexture(TextureMap.locationBlocksTexture);
-      GL11.glPushMatrix();
-      GL11.glTranslatef((float)x + 0.5F, (float)y + sieve.getAdjustedVolume(), (float)z + 0.5F);
-      this.contents.renderTop(icon);
-      GL11.glPopMatrix();
-      GL11.glPushMatrix();
-      GL11.glTranslatef((float)x + 0.5F, (float)y + 0.7F, (float)z + 0.5F);
-      this.contents.renderBottom(icon);
-      GL11.glPopMatrix();
+    if (sieve.getCurrentStack().getBlock() == Blocks.air) {
+        return;
     }
+    IIcon icon = sieve.getCurrentStack().getBlock().getIcon(0, sieve.getCurrentStack().getMeta());
+    bindTexture(TextureMap.locationBlocksTexture);
+    GL11.glPushMatrix();
+    GL11.glTranslatef((float)x + 0.5F, (float)y + sieve.getAdjustedProgress(), (float)z + 0.5F);
+    this.contents.renderTop(icon);
+    GL11.glPopMatrix();
+    GL11.glPushMatrix();
+    GL11.glTranslatef((float)x + 0.5F, (float)y + 0.7F, (float)z + 0.5F);
+    this.contents.renderBottom(icon);
+    GL11.glPopMatrix();
   }
 
   public void bindSieveTexture(Block block, int meta) {

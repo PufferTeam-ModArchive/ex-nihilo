@@ -22,6 +22,7 @@ import exnihilo.compatibility.foresty.Forestry;
 import exnihilo.data.ModData;
 import exnihilo.data.WorldData;
 import exnihilo.events.HandlerHammer;
+import exnihilo.events.HandlerNEIRecipeHandlerInfo;
 import exnihilo.network.ENPacketHandler;
 import exnihilo.proxies.Proxy;
 import exnihilo.registries.BarrelRecipeRegistry;
@@ -82,6 +83,7 @@ public class ExNihilo {
         proxy.initializeRenderers();
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new HandlerHammer());
+        MinecraftForge.EVENT_BUS.register(new HandlerNEIRecipeHandlerInfo());
     }
 
     @EventHandler

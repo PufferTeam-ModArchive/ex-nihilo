@@ -1,19 +1,17 @@
 package exnihilo.registries.helpers;
 
 import java.beans.ConstructorProperties;
-import net.minecraft.item.Item;
+
+import exnihilo.utils.ItemInfo;
 
 public class SiftingResult {
-  public final Item item;
-
-  public final int meta;
+  public final ItemInfo drop;
 
   public final int rarity;
 
-  @ConstructorProperties({"item", "meta", "rarity"})
-  public SiftingResult(Item item, int meta, int rarity) {
-    this.item = item;
-    this.meta = meta;
+  @ConstructorProperties({"drop", "rarity", "meshLevel"})
+  public SiftingResult(ItemInfo drop, int rarity) {
+    this.drop = drop;
     this.rarity = rarity;
   }
 }

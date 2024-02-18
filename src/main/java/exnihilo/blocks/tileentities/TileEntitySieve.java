@@ -1,173 +1,160 @@
 package exnihilo.blocks.tileentities;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import exnihilo.data.ModData;
+import exnihilo.items.meshes.MeshType;
+import exnihilo.network.ENPacketHandler;
+import exnihilo.network.MessageSieve;
 import exnihilo.network.VanillaPacket;
-import exnihilo.particles.ParticleSieve;
 import exnihilo.registries.SieveRegistry;
 import exnihilo.registries.helpers.SiftingResult;
 
 import java.util.ArrayList;
 
+import exnihilo.utils.BlockInfo;
+import exnihilo.utils.ItemInfo;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 
 public class TileEntitySieve extends TileEntity {
 
     private static final float MIN_RENDER_CAPACITY = 0.7F;
     private static final float MAX_RENDER_CAPACITY = 0.9F;
     private static final float PROCESSING_INTERVAL = 0.075F;
-    private static final int UPDATE_INTERVAL = 20;
 
-    public Block content;
-    public int contentMeta = 0;
-    private float volume = 0.0F;
-    public SieveMode mode = SieveMode.EMPTY;
+    private MeshType meshType = MeshType.NONE;
 
-    private int timer = 0;
-    private boolean update = false;
-    private boolean particleMode = false;
-    private int timesClicked = 0;
-
-    public enum SieveMode {
-        EMPTY(0),
-        FILLED(1);
-
-        public final int value;
-
-        SieveMode(int v) {
-            this.value = v;
-        }
-    }
+    private BlockInfo currentStack = BlockInfo.EMPTY;
+    private float progress = 0;
+    private long lastSieveAction = 0;
 
     public TileEntitySieve() {
+        if (ModData.LEGACY_SIEVE) {
+            this.meshType = MeshType.SILK;
+        }
     }
 
     public void addSievable(Block block, int blockMeta) {
-        this.content = block;
-        this.contentMeta = blockMeta;
-        this.mode = SieveMode.FILLED;
-        this.volume = 1.0F;
+        if (meshType == MeshType.NONE || currentStack != BlockInfo.EMPTY)
+            return;
+        ItemInfo itemInfo = new ItemInfo(Item.getItemFromBlock(block), blockMeta);
+        if (SieveRegistry.getSiftingOutput(itemInfo, this.meshType) != null) {
+            this.currentStack = new BlockInfo(block, blockMeta);
+            sendPacketUpdate();
+        }
+    }
+
+    private void sendPacketUpdate() {
+        if (this.worldObj.isRemote)
+            return;
+        ENPacketHandler.sendToAllAround(new MessageSieve(
+            this.xCoord,
+            this.yCoord,
+            this.zCoord,
+            this.progress,
+            this.meshType.ordinal(),
+            this.getCurrentStack().getMeta(),
+            Block.blockRegistry.getNameForObject(this.getCurrentStack().getBlock())), this);
         VanillaPacket.sendTileEntityUpdate(this);
     }
 
-    public int getProgress() {
-        return timesClicked;
-    }
-    public boolean isSieveSimilarToInput(TileEntitySieve sieve) {
-        return sieve.mode == this.mode && sieve.timesClicked == this.timesClicked;
-    }
+    public void ProcessContents() {
+        if (this.worldObj.isRemote)
+            return;
 
-    @Override
-    public void updateEntity() {
-        if (this.worldObj.isRemote && this.particleMode) spawnFX(this.content, this.contentMeta);
-        this.timer++;
-        if (this.timer >= UPDATE_INTERVAL) {
-            this.timesClicked = 0;
-            this.timer = 0;
-            disableParticles();
-            if (this.update) update();
+        // 4 ticks is the same period of time as holding down right click
+        if (this.worldObj.getTotalWorldTime() - lastSieveAction < 4) {
+            return;
         }
-    }
 
-    public void ProcessContents(final boolean creative) {
-        if (creative) {
-            this.volume = 0.0F;
-        } else {
-            this.timesClicked++;
-            if (this.timesClicked <= 6) this.volume -= PROCESSING_INTERVAL;
-        }
-        if (this.volume <= 0.0F) {
-            this.mode = SieveMode.EMPTY;
-            if (!this.worldObj.isRemote) {
-                final ArrayList<SiftingResult> rewards = SieveRegistry.getSiftingOutput(this.content, this.contentMeta);
-                if (rewards != null && rewards.size() > 0) {
-                    for (final SiftingResult reward : rewards) {
-                        if (this.worldObj.rand.nextInt(reward.rarity) == 0) {
-                            final EntityItem entityitem = new EntityItem(this.worldObj, this.xCoord + 0.5D, this.yCoord + 1.5D, this.zCoord + 0.5D, new ItemStack(reward.item, 1, reward.meta));
-                            final double f3 = 0.05F;
-                            entityitem.motionX = this.worldObj.rand.nextGaussian() * f3;
-                            entityitem.motionY = 0.2D;
-                            entityitem.motionZ = this.worldObj.rand.nextGaussian() * f3;
-                            this.worldObj.spawnEntityInWorld(entityitem);
-                        }
+        lastSieveAction = this.worldObj.getTotalWorldTime();
+
+        progress += PROCESSING_INTERVAL;
+
+        if (progress >= 1) {
+            ItemInfo itemInfo = new ItemInfo(Item.getItemFromBlock(this.currentStack.getBlock()), this.currentStack.getMeta());
+            final ArrayList<SiftingResult> rewards = SieveRegistry.getSiftingOutput(itemInfo, this.meshType);
+            if (rewards != null && rewards.size() > 0) {
+                for (final SiftingResult reward : rewards) {
+                    if (this.worldObj.rand.nextInt(reward.rarity) == 0) {
+                        final EntityItem entityitem = new EntityItem(this.worldObj, this.xCoord + 0.5D, this.yCoord + 1.5D, this.zCoord + 0.5D, new ItemStack(reward.drop.getItem(), 1, reward.drop.getMeta()));
+                        final double f3 = 0.05F;
+                        entityitem.motionX = this.worldObj.rand.nextGaussian() * f3;
+                        entityitem.motionY = 0.2D;
+                        entityitem.motionZ = this.worldObj.rand.nextGaussian() * f3;
+                        this.worldObj.spawnEntityInWorld(entityitem);
                     }
                 }
             }
-        } else {
-            this.particleMode = true;
+            resetSieve();
         }
-        this.update = true;
+
+        sendPacketUpdate();
+
     }
 
-    @SideOnly(Side.CLIENT)
-    private void spawnFX(Block block, int blockMeta) {
-        if (block != null) {
-            final IIcon icon = block.getIcon(0, blockMeta);
-            for (int x = 0; x < 4; x++) {
-                final ParticleSieve dust = new ParticleSieve(this.worldObj, this.xCoord + 0.8D * this.worldObj.rand.nextFloat() + 0.15D, this.yCoord + 0.69D, this.zCoord + 0.8D * this.worldObj.rand.nextFloat() + 0.15D, 0.0D, 0.0D, 0.0D, icon);
-                (Minecraft.getMinecraft()).effectRenderer.addEffect(dust);
-            }
-        }
-    }
-
-    public float getVolume() {
-        return this.volume;
-    }
-
-    public float getAdjustedVolume() {
-        final float capacity = MAX_RENDER_CAPACITY - MIN_RENDER_CAPACITY;
-        float adjusted = this.volume * capacity;
-        adjusted += MIN_RENDER_CAPACITY;
-        return adjusted;
-    }
-
-    private void update() {
-        this.update = false;
-        VanillaPacket.sendTileEntityUpdate(this);
-    }
-
-    private void disableParticles() {
-        this.particleMode = false;
+    private void resetSieve() {
+        progress = 0;
+        lastSieveAction = 0;
+        currentStack = BlockInfo.EMPTY;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        switch (compound.getInteger("mode")) {
-            case 0 -> this.mode = SieveMode.EMPTY;
-            case 1 -> this.mode = SieveMode.FILLED;
-        }
-        if (!compound.getString("content").equals("")) {
-            this.content = (Block) Block.blockRegistry.getObject(compound.getString("content"));
-        } else {
-            this.content = null;
-        }
-        this.contentMeta = compound.getInteger("contentMeta");
-        this.volume = compound.getFloat("volume");
-        this.particleMode = compound.getBoolean("particles");
+        if (compound.hasKey("stack"))
+            this.currentStack = BlockInfo.readFromNBT(compound.getCompoundTag("stack"));
+        this.meshType = MeshType.getValues()[compound.getShort("mesh")];
+        this.progress = compound.getFloat("progress");
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-        compound.setInteger("mode", this.mode.value);
-        if (this.content == null) {
-            compound.setString("content", "");
-        } else {
-            compound.setString("content", Block.blockRegistry.getNameForObject(this.content));
+        if (!(currentStack == BlockInfo.EMPTY)) {
+            NBTTagCompound stackTag = currentStack.writeToNBT(new NBTTagCompound());
+            compound.setTag("stack", stackTag);
         }
-        compound.setInteger("contentMeta", this.contentMeta);
-        compound.setFloat("volume", this.volume);
-        compound.setBoolean("particles", this.particleMode);
+        compound.setShort("mesh", (short) this.meshType.ordinal());
+        compound.setFloat("progress", this.progress);
+    }
+
+    public void setMeshType(MeshType type) {
+        this.meshType = type;
+        sendPacketUpdate();
+    }
+
+    public MeshType getMeshType() {
+        return this.meshType;
+    }
+
+    public void setCurrentStack(BlockInfo info) {
+        this.currentStack = info;
+    }
+
+    public BlockInfo getCurrentStack() {
+        return currentStack;
+    }
+
+    public void setProgress(float progress) {
+        this.progress = progress;
+    }
+
+    public float getProgress() {
+        return progress;
+    }
+
+    public float getAdjustedProgress() {
+        final float capacity = MAX_RENDER_CAPACITY - MIN_RENDER_CAPACITY;
+        float adjusted = (1 - this.progress) * capacity;
+        adjusted += MIN_RENDER_CAPACITY;
+        return adjusted;
     }
 
     @Override

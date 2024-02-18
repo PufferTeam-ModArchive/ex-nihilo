@@ -27,12 +27,9 @@ import exnihilo.blocks.tileentities.TileEntityLeavesInfested;
 import exnihilo.blocks.tileentities.TileEntitySieve;
 import exnihilo.entities.EntityStone;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderSnowball;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
-import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 public class ClientProxy extends Proxy {
@@ -58,7 +55,7 @@ public class ClientProxy extends Proxy {
         ModelSieve sieve = new ModelSieve();
         ModelSieveMesh mesh = new ModelSieveMesh();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySieve.class, new RenderSieve(sieve, mesh));
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.Sieve), new ItemRenderSieve(sieve, mesh));
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.Sieve), new ItemRenderSieve(sieve));
 
         ModelCrucible crucible = new ModelCrucible();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrucible.class, new RenderCrucible(crucible));
