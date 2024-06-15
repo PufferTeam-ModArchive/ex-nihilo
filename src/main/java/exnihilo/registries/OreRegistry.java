@@ -1,16 +1,5 @@
 package exnihilo.registries;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.registry.GameRegistry;
-import exnihilo.ENBlocks;
-import exnihilo.blocks.ores.BlockOre;
-import exnihilo.blocks.ores.BlockOreFactory;
-import exnihilo.compatibility.ThermalExpansion;
-import exnihilo.compatibility.TinkersConstruct;
-import exnihilo.items.ores.ItemOre;
-import exnihilo.items.ores.ItemOreFactory;
-import exnihilo.registries.helpers.Color;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -22,6 +11,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.registry.GameRegistry;
+import exnihilo.ENBlocks;
+import exnihilo.blocks.ores.BlockOre;
+import exnihilo.blocks.ores.BlockOreFactory;
+import exnihilo.compatibility.ThermalExpansion;
+import exnihilo.compatibility.TinkersConstruct;
+import exnihilo.config.SieveConfig;
+import exnihilo.items.ores.ItemOre;
+import exnihilo.items.ores.ItemOreFactory;
+import exnihilo.registries.helpers.Color;
 
 public class OreRegistry {
 
@@ -71,7 +72,7 @@ public class OreRegistry {
     }
 
     public static void createOverworldOre(String name, Color color, int rarity, Item existingIngot,
-        boolean skipFurnaceRecipes) {
+            boolean skipFurnaceRecipes) {
         createOre(0, name, color, rarity, existingIngot, skipFurnaceRecipes);
     }
 
@@ -88,7 +89,7 @@ public class OreRegistry {
     }
 
     public static void createNetherOre(String name, Color color, int rarity, Item existingIngot,
-        boolean skipFurnaceRecipes) {
+            boolean skipFurnaceRecipes) {
         createOre(-1, name, color, rarity, existingIngot, skipFurnaceRecipes);
     }
 
@@ -105,17 +106,18 @@ public class OreRegistry {
     }
 
     public static void createEnderOre(String name, Color color, int rarity, Item existingIngot,
-        boolean skipFurnaceRecipes) {
+            boolean skipFurnaceRecipes) {
         createOre(1, name, color, rarity, existingIngot, skipFurnaceRecipes);
     }
 
-    private static void createOre(int type, String name, Color color, int rarity, Item existingIngot, boolean skipFurnaceRecipes) {
+    private static void createOre(int type, String name, Color color, int rarity, Item existingIngot,
+            boolean skipFurnaceRecipes) {
         if (ores.contains(type + "_" + name.toLowerCase())) return;
         ores.add(type + "_" + name.toLowerCase());
         BlockOre gravel = null;
         boolean gravelAlreadyExisted = false;
         switch (type) {
-            //nether
+            // nether
             case -1 -> {
                 gravel = gravelTable.get("nether_" + name);
                 if (gravel == null) {
@@ -125,7 +127,7 @@ public class OreRegistry {
                 }
                 gravelAlreadyExisted = true;
             }
-            //normal
+            // normal
             case 0 -> {
                 gravel = gravelTable.get(name);
                 if (gravel == null) {
@@ -135,7 +137,7 @@ public class OreRegistry {
                 }
                 gravelAlreadyExisted = true;
             }
-            //end
+            // end
             case 1 -> {
                 gravel = gravelTable.get("ender_" + name);
                 if (gravel == null) {
@@ -192,7 +194,7 @@ public class OreRegistry {
             registerOreItem(name, powdered, powderedTable);
         }
 
-        //Use an existing ingot if it's specified.
+        // Use an existing ingot if it's specified.
         Item ingot;
         if (existingIngot != null) {
             ingot = existingIngot;
@@ -205,7 +207,7 @@ public class OreRegistry {
                 registerOreDict(name, ingot);
             }
         }
-        //Register hammer recipes.
+        // Register hammer recipes.
         if (!gravelAlreadyExisted) registerHammerRecipe(gravel, crushed);
         if (!HammerRegistry.registered(sand, 0)) registerHammerRecipe(sand, powdered);
         registerCraftingRecipe(broken, gravel);
@@ -216,14 +218,16 @@ public class OreRegistry {
             registerFurnaceRecipe(sand, ingot);
             registerFurnaceRecipe(dust, ingot);
         }
-        switch (type) {
-            case -1 -> registerSieveRecipe(ENBlocks.NetherGravel, broken, rarity);
-            case 0 -> {
-                registerSieveRecipe(Blocks.gravel, broken, rarity);
-                registerSieveRecipe(Blocks.sand, crushed, rarity);
-                registerSieveRecipe(ENBlocks.Dust, powdered, rarity);
+        if (SieveConfig.enableDefaultSieveRewards) {
+            switch (type) {
+                case -1 -> registerSieveRecipe(ENBlocks.NetherGravel, broken, rarity);
+                case 0 -> {
+                    registerSieveRecipe(Blocks.gravel, broken, rarity);
+                    registerSieveRecipe(Blocks.sand, crushed, rarity);
+                    registerSieveRecipe(ENBlocks.Dust, powdered, rarity);
+                }
+                case 1 -> registerSieveRecipe(ENBlocks.EnderGravel, broken, rarity);
             }
-            case 1 -> registerSieveRecipe(ENBlocks.EnderGravel, broken, rarity);
         }
     }
 
@@ -240,9 +244,14 @@ public class OreRegistry {
     }
 
     private static void registerCraftingRecipe(ItemOre ingredient, BlockOre result) {
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(result, 1, 0), "xx", "xx",
+        GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                        new ItemStack(result, 1, 0),
+                        "xx",
+                        "xx",
 
-            'x', ingredient));
+                        'x',
+                        ingredient));
     }
 
     private static void registerFurnaceRecipe(BlockOre ore, Item ingot) {

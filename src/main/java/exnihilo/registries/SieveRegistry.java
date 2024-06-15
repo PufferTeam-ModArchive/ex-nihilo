@@ -1,12 +1,5 @@
 package exnihilo.registries;
 
-import exnihilo.ENBlocks;
-import exnihilo.ENItems;
-import exnihilo.ExNihilo;
-import exnihilo.items.meshes.MeshType;
-import exnihilo.registries.helpers.SiftingResult;
-import exnihilo.utils.ItemInfo;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,6 +11,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 
+import exnihilo.ENBlocks;
+import exnihilo.ENItems;
+import exnihilo.ExNihilo;
+import exnihilo.items.meshes.MeshType;
+import exnihilo.registries.helpers.SiftingResult;
+import exnihilo.utils.ItemInfo;
+
 public class SieveRegistry {
 
     public static HashMap<MeshType, HashMap<ItemInfo, ArrayList<SiftingResult>>> getSiftables() {
@@ -28,13 +28,13 @@ public class SieveRegistry {
 
     static {
         for (MeshType meshType : MeshType.getValues()) {
-            if (meshType == MeshType.NONE)
-                continue;
+            if (meshType == MeshType.NONE) continue;
             siftables.put(meshType, new HashMap<>());
         }
     }
 
-    public static void register(Block source, int sourceMeta, Item output, int outputMeta, int rarity, MeshType meshType) {
+    public static void register(Block source, int sourceMeta, Item output, int outputMeta, int rarity,
+            MeshType meshType) {
         if (meshType == MeshType.NONE) return;
         if (source == null || output == null) return;
         if (rarity > 0) {
@@ -46,11 +46,11 @@ public class SieveRegistry {
         } else {
             ItemStack inputStack = new ItemStack(source, sourceMeta);
             ItemStack outputStack = new ItemStack(output, outputMeta);
-            ExNihilo.log.info("Block "
-                + inputStack.getDisplayName()
-                + " with reward "
-                + outputStack.getDisplayName()
-                + " was not added. Reason: Chance 0");
+            ExNihilo.log.info(
+                    "Block " + inputStack.getDisplayName()
+                            + " with reward "
+                            + outputStack.getDisplayName()
+                            + " was not added. Reason: Chance 0");
         }
     }
 
@@ -80,15 +80,13 @@ public class SieveRegistry {
 
     public static boolean registered(Block block, int meta, MeshType meshType) {
         HashMap<ItemInfo, ArrayList<SiftingResult>> res = siftables.get(meshType);
-        if (res == null)
-            return false;
+        if (res == null) return false;
         return res.containsKey(new ItemInfo(block, meta));
     }
 
     public static boolean registered(Block block, MeshType meshType) {
         HashMap<ItemInfo, ArrayList<SiftingResult>> res = siftables.get(meshType);
-        if (res == null)
-            return false;
+        if (res == null) return false;
         return res.containsKey(new ItemInfo(block, 32767));
     }
 
@@ -102,30 +100,29 @@ public class SieveRegistry {
 
     public static void unregisterReward(Block block, int meta, Item output, int outputMeta) {
         for (MeshType meshType : MeshType.getValues()) {
-            if (meshType == MeshType.NONE)
-                continue;
+            if (meshType == MeshType.NONE) continue;
             unregisterReward(block, meta, output, outputMeta, meshType);
         }
     }
 
     public static void unregisterRewardFromAllBlocks(Item output, int outputMeta) {
         for (MeshType meshType : MeshType.getValues()) {
-            if (meshType == MeshType.NONE)
-                continue;
-            for (ItemInfo iteminfo : siftables.get(meshType).keySet())
-                unregisterReward(Block.getBlockFromItem(iteminfo.getItem()), iteminfo.getMeta(), output, outputMeta, meshType);
+            if (meshType == MeshType.NONE) continue;
+            for (ItemInfo iteminfo : siftables.get(meshType).keySet()) unregisterReward(
+                    Block.getBlockFromItem(iteminfo.getItem()),
+                    iteminfo.getMeta(),
+                    output,
+                    outputMeta,
+                    meshType);
         }
     }
 
     public static void unregisterAllRewardsFromBlock(Block block, int meta) {
         for (MeshType meshType : MeshType.getValues()) {
-            if (meshType == MeshType.NONE)
-                continue;
+            if (meshType == MeshType.NONE) continue;
             siftables.get(meshType).remove(new ItemInfo(block, meta));
         }
     }
-
-    public static void load(Configuration config) {}
 
     public static void registerRewards() {
         register(Blocks.dirt, 0, ENItems.Stones, 0, 1);
@@ -170,11 +167,12 @@ public class SieveRegistry {
             String[] current = input.split(":");
             for (ItemStack stack : OreDictionary.getOres(current[0])) {
                 Item reward = (Item) Item.itemRegistry.getObject(current[1] + ":" + current[2]);
-                if (Block.getBlockFromItem(stack.getItem()) != null) register(Block.getBlockFromItem(stack.getItem()),
-                    stack.getItemDamage(),
-                    reward,
-                    Integer.parseInt(current[3]),
-                    Integer.parseInt(current[4]));
+                if (Block.getBlockFromItem(stack.getItem()) != null) register(
+                        Block.getBlockFromItem(stack.getItem()),
+                        stack.getItemDamage(),
+                        reward,
+                        Integer.parseInt(current[3]),
+                        Integer.parseInt(current[4]));
             }
         }
     }
@@ -186,11 +184,11 @@ public class SieveRegistry {
                 Block source = (Block) Block.blockRegistry.getObject(current[0] + ":" + current[1]);
                 Item reward = (Item) Item.itemRegistry.getObject(current[3] + ":" + current[4]);
                 register(
-                    source,
-                    Integer.parseInt(current[2]),
-                    reward,
-                    Integer.parseInt(current[5]),
-                    Integer.parseInt(current[6]));
+                        source,
+                        Integer.parseInt(current[2]),
+                        reward,
+                        Integer.parseInt(current[5]),
+                        Integer.parseInt(current[6]));
             }
         }
     }
@@ -198,12 +196,12 @@ public class SieveRegistry {
     public static HashMap<MeshType, ArrayList<ItemInfo>> getSources(ItemStack reward) {
         HashMap<MeshType, ArrayList<ItemInfo>> res = new HashMap<>();
         for (MeshType meshType : MeshType.getValues()) {
-            if (meshType == MeshType.NONE)
-                continue;
+            if (meshType == MeshType.NONE) continue;
             res.put(meshType, new ArrayList<>());
             for (ItemInfo entry : siftables.get(meshType).keySet()) {
                 for (SiftingResult sift : siftables.get(meshType).get(entry)) {
-                    if ((new ItemInfo(sift.drop.getItem(), sift.drop.getMeta())).equals(new ItemInfo(reward))) res.get(meshType).add(entry);
+                    if ((new ItemInfo(sift.drop.getItem(), sift.drop.getMeta())).equals(new ItemInfo(reward)))
+                        res.get(meshType).add(entry);
                 }
             }
         }

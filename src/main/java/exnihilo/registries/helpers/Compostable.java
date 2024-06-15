@@ -1,8 +1,8 @@
 package exnihilo.registries.helpers;
 
-import net.minecraft.item.Item;
-
 import java.util.Objects;
+
+import net.minecraft.item.Item;
 
 public class Compostable {
 
@@ -21,8 +21,7 @@ public class Compostable {
         if (!(o instanceof Compostable other)) return false;
         if (!other.canEqual(this)) return false;
         Object this$unlocalizedName = this.unlocalizedName, other$unlocalizedName = other.unlocalizedName;
-        if (!Objects.equals(this$unlocalizedName, other$unlocalizedName))
-            return false;
+        if (!Objects.equals(this$unlocalizedName, other$unlocalizedName)) return false;
         Object this$item = this.item, other$item = other.item;
         if (!Objects.equals(this$item, other$item)) return false;
         if (this.meta != other.meta) return false;

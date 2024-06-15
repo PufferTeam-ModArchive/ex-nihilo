@@ -1,17 +1,5 @@
 package exnihilo.blocks;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import exnihilo.ENItems;
-import exnihilo.blocks.tileentities.TileEntityBarrel;
-import exnihilo.data.BlockData;
-import exnihilo.data.ModData;
-import exnihilo.registries.BarrelRecipeRegistry;
-import exnihilo.registries.CompostRegistry;
-import exnihilo.registries.helpers.EntityWithItem;
-import exnihilo.utils.ItemInfo;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
 
@@ -34,6 +22,19 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import exnihilo.ENItems;
+import exnihilo.ExNihilo;
+import exnihilo.blocks.tileentities.TileEntityBarrel;
+import exnihilo.config.BarrelConfig;
+import exnihilo.data.BlockData;
+import exnihilo.registries.BarrelRecipeRegistry;
+import exnihilo.registries.CompostRegistry;
+import exnihilo.registries.helpers.EntityWithItem;
+import exnihilo.utils.ItemInfo;
+
 public class BlockBarrel extends BlockContainer {
 
     @SideOnly(Side.CLIENT)
@@ -46,7 +47,7 @@ public class BlockBarrel extends BlockContainer {
         setCreativeTab(CreativeTabs.tabDecorations);
         setHardness(2.0F);
         setBlockBounds(0.1F, 0.0F, 0.1F, 0.9F, 1.0F, 0.9F);
-        setBlockName(ModData.ID + "." + BlockData.BARREL_KEY);
+        setBlockName(ExNihilo.MODID + "." + BlockData.BARREL_KEY);
         GameRegistry.registerTileEntity(TileEntityBarrel.class, getUnlocalizedName());
     }
 
@@ -58,8 +59,7 @@ public class BlockBarrel extends BlockContainer {
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void getSubBlocks(Item item, CreativeTabs tabs, List subItems) {
-        for (int i = 0; i < 6; i++)
-            subItems.add(new ItemStack(item, 1, i));
+        for (int i = 0; i < 6; i++) subItems.add(new ItemStack(item, 1, i));
     }
 
     @Override
@@ -80,28 +80,27 @@ public class BlockBarrel extends BlockContainer {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7,
-        float par8, float par9) {
+            float par8, float par9) {
         if (player == null) return false;
         TileEntityBarrel barrel = (TileEntityBarrel) world.getTileEntity(x, y, z);
         if ((barrel.getMode()).canExtract == TileEntityBarrel.ExtractMode.Always
-            || (world.difficultySetting.getDifficultyId() == 0
-            && (barrel.getMode()).canExtract == TileEntityBarrel.ExtractMode.PeacefulOnly)) {
+                || (world.difficultySetting.getDifficultyId() == 0
+                        && (barrel.getMode()).canExtract == TileEntityBarrel.ExtractMode.PeacefulOnly)) {
             barrel.giveAppropriateItem();
         } else if (player.getCurrentEquippedItem() != null) {
             ItemStack item = player.getCurrentEquippedItem();
             if (item != null) {
-                if (ModData.ALLOW_BARREL_RECIPE_DIRT)
-                    if (barrel.getMode() == TileEntityBarrel.BarrelMode.EMPTY || (barrel.getMode()
-                        == TileEntityBarrel.BarrelMode.COMPOST && !barrel.isFull()))
-                        if (CompostRegistry.containsItem(item.getItem(), item.getItemDamage())) {
-                            barrel.addCompostItem(CompostRegistry.getItem(item.getItem(), item.getItemDamage()));
-                            if (!player.capabilities.isCreativeMode) {
-                                item.stackSize--;
-                                if (item.stackSize == 0) item = null;
-                            }
+                if (BarrelConfig.enableBarrelRecipeDirt) if (barrel.getMode() == TileEntityBarrel.BarrelMode.EMPTY
+                        || (barrel.getMode() == TileEntityBarrel.BarrelMode.COMPOST && !barrel.isFull()))
+                    if (CompostRegistry.containsItem(item.getItem(), item.getItemDamage())) {
+                        barrel.addCompostItem(CompostRegistry.getItem(item.getItem(), item.getItemDamage()));
+                        if (!player.capabilities.isCreativeMode) {
+                            item.stackSize--;
+                            if (item.stackSize == 0) item = null;
                         }
+                    }
                 if (barrel.getMode() == TileEntityBarrel.BarrelMode.EMPTY
-                    || barrel.getMode() == TileEntityBarrel.BarrelMode.FLUID) {
+                        || barrel.getMode() == TileEntityBarrel.BarrelMode.FLUID) {
                     FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(item);
                     if (fluid != null) {
                         int capacity = barrel.fill(ForgeDirection.UP, fluid, false);
@@ -110,12 +109,11 @@ public class BlockBarrel extends BlockContainer {
                             if (!player.capabilities.isCreativeMode)
                                 if (item.getItem() == Items.potionitem && item.getItemDamage() == 0) {
                                     player.inventory.setInventorySlotContents(
-                                        player.inventory.currentItem,
-                                        new ItemStack(Items.glass_bottle, 1, 0));
+                                            player.inventory.currentItem,
+                                            new ItemStack(Items.glass_bottle, 1, 0));
                                 } else {
-                                    player.inventory.setInventorySlotContents(
-                                        player.inventory.currentItem,
-                                        getContainer(item));
+                                    player.inventory
+                                            .setInventorySlotContents(player.inventory.currentItem, getContainer(item));
                                 }
                         }
                     } else if (FluidContainerRegistry.isContainer(item)) {
@@ -148,8 +146,7 @@ public class BlockBarrel extends BlockContainer {
                         try {
                             Constructor<EntityLivingBase> constructor = mob.getEntity().getConstructor(World.class);
                             barrel.entity = constructor.newInstance(barrel.getWorldObj());
-                        } catch (Exception ignored) {
-                        }
+                        } catch (Exception ignored) {}
                         barrel.entityParticleName = mob.getParticle();
                         barrel.peacefulDrop = mob.getDrops();
                         barrel.setMode(TileEntityBarrel.BarrelMode.MOB);
@@ -157,12 +154,12 @@ public class BlockBarrel extends BlockContainer {
                     }
                     if (barrel.getMode() == TileEntityBarrel.BarrelMode.FLUID && barrel.isFull())
                         if (barrel.fluid.getFluid().equals(FluidRegistry.WATER)) {
-                            if (ModData.ALLOW_BARREL_RECIPE_SLIME && item.getItem() == Items.milk_bucket) {
+                            if (BarrelConfig.enableBarrelRecipeSlime && item.getItem() == Items.milk_bucket) {
                                 barrel.setMode(TileEntityBarrel.BarrelMode.MILKED);
                                 useItem(player);
                             }
-                            if (ModData.ALLOW_BARREL_RECIPE_SOULSAND && (item.getItem() == Items.mushroom_stew
-                                || item.getItem() == ENItems.Spores)) {
+                            if (BarrelConfig.enableBarrelRecipeSoulsand
+                                    && (item.getItem() == Items.mushroom_stew || item.getItem() == ENItems.Spores)) {
                                 barrel.setMode(TileEntityBarrel.BarrelMode.SPORED);
                                 useItem(player);
                             }
@@ -191,8 +188,8 @@ public class BlockBarrel extends BlockContainer {
     @Override
     public void registerBlockIcons(IIconRegister register) {
         blockIcon = Blocks.planks.getIcon(0, 0);
-        iconCompost = register.registerIcon(ModData.TEXTURE_LOCATION + ":" + "IconBarrelCompost");
-        iconClouds = register.registerIcon(ModData.TEXTURE_LOCATION + ":" + "IconBarrelInternalClouds");
+        iconCompost = register.registerIcon(ExNihilo.MODID + ":" + "IconBarrelCompost");
+        iconClouds = register.registerIcon(ExNihilo.MODID + ":" + "IconBarrelInternalClouds");
     }
 
     @Override

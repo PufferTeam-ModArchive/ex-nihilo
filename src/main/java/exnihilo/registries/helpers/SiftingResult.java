@@ -5,13 +5,14 @@ import java.beans.ConstructorProperties;
 import exnihilo.utils.ItemInfo;
 
 public class SiftingResult {
-  public final ItemInfo drop;
 
-  public final int rarity;
+    public final ItemInfo drop;
 
-  @ConstructorProperties({"drop", "rarity", "meshLevel"})
-  public SiftingResult(ItemInfo drop, int rarity) {
-    this.drop = drop;
-    this.rarity = rarity;
-  }
+    public final int rarity;
+
+    @ConstructorProperties({ "drop", "rarity", "meshLevel" })
+    public SiftingResult(ItemInfo drop, int rarity) {
+        this.drop = drop;
+        this.rarity = rarity;
+    }
 }

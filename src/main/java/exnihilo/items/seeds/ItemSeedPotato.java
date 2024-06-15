@@ -8,37 +8,38 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.EnumPlantType;
 
 public class ItemSeedPotato extends ItemSeedBase {
-  public ItemSeedPotato() {
-    super(Blocks.potatoes, Blocks.dirt);
-  }
 
-  @Override
-  public Block getPlant(IBlockAccess world, int x, int y, int z) {
-    return Blocks.potatoes;
-  }
+    public ItemSeedPotato() {
+        super(Blocks.potatoes, Blocks.dirt);
+    }
 
-  @Override
-  public int getPlantMetadata(IBlockAccess world, int x, int y, int z) {
-    return 0;
-  }
+    @Override
+    public Block getPlant(IBlockAccess world, int x, int y, int z) {
+        return Blocks.potatoes;
+    }
 
-  @Override
-  public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z) {
-    return EnumPlantType.Crop;
-  }
+    @Override
+    public int getPlantMetadata(IBlockAccess world, int x, int y, int z) {
+        return 0;
+    }
 
-  @Override
-  public String getUnlocalizedName() {
-    return "exnihilo.seed_potato";
-  }
+    @Override
+    public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z) {
+        return EnumPlantType.Crop;
+    }
 
-  @Override
-  public String getUnlocalizedName(ItemStack item) {
-    return "exnihilo.seed_potato";
-  }
+    @Override
+    public String getUnlocalizedName() {
+        return "exnihilo.seed_potato";
+    }
 
-  @Override
-  public void registerIcons(IIconRegister register) {
-    this.itemIcon = register.registerIcon("exnihilo:ItemSeedPotato");
-  }
+    @Override
+    public String getUnlocalizedName(ItemStack item) {
+        return "exnihilo.seed_potato";
+    }
+
+    @Override
+    public void registerIcons(IIconRegister register) {
+        this.itemIcon = register.registerIcon("exnihilo:ItemSeedPotato");
+    }
 }

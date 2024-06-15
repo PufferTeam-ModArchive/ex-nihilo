@@ -1,9 +1,6 @@
 package exnihilo.blocks;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import exnihilo.blocks.tileentities.TileEntityCrucibleUnfired;
-import exnihilo.data.BlockData;
-import exnihilo.data.ModData;
+import exnihilo.ExNihilo;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -12,13 +9,17 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import exnihilo.blocks.tileentities.TileEntityCrucibleUnfired;
+import exnihilo.data.BlockData;
+
 public class BlockCrucibleUnfired extends BlockContainer {
 
     public BlockCrucibleUnfired() {
         super(Material.clay);
         setCreativeTab(CreativeTabs.tabMaterials);
         setHardness(2.0F);
-        setBlockName(ModData.ID + "." + BlockData.CRUCIBLE_UNFIRED_KEY);
+        setBlockName(ExNihilo.MODID + "." + BlockData.CRUCIBLE_UNFIRED_KEY);
         GameRegistry.registerTileEntity(TileEntityCrucibleUnfired.class, getUnlocalizedName());
     }
 

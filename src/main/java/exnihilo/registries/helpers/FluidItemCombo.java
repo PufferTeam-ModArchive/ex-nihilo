@@ -1,12 +1,12 @@
 package exnihilo.registries.helpers;
 
-import exnihilo.utils.ItemInfo;
-
 import java.beans.ConstructorProperties;
 import java.util.Objects;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
+
+import exnihilo.utils.ItemInfo;
 
 public class FluidItemCombo {
 
@@ -27,8 +27,7 @@ public class FluidItemCombo {
         if (!(o instanceof FluidItemCombo other)) return false;
         if (!other.canEqual(this)) return false;
         Object this$inputFluid = getInputFluid(), other$inputFluid = other.getInputFluid();
-        if (!Objects.equals(this$inputFluid, other$inputFluid))
-            return false;
+        if (!Objects.equals(this$inputFluid, other$inputFluid)) return false;
         Object this$inputItem = getInputItem(), other$inputItem = other.getInputItem();
         return Objects.equals(this$inputItem, other$inputItem);
     }

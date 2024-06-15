@@ -5,36 +5,38 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 
 public class Meltable {
-  public final Block block;
 
-  public final int meta;
+    public final Block block;
 
-  public final float solidVolume;
+    public final int meta;
 
-  public Fluid fluid;
+    public final float solidVolume;
 
-  public float fluidVolume;
+    public Fluid fluid;
 
-  public final Block appearance;
+    public float fluidVolume;
 
-  public final int appearanceMeta;
+    public final Block appearance;
 
-  public Meltable(Block block, int meta, float solidAmount, Fluid fluid, float fluidAmount, Block appearance, int appearanceMeta) {
-    this.block = block;
-    this.meta = meta;
-    this.solidVolume = solidAmount;
-    this.fluid = fluid;
-    this.fluidVolume = fluidAmount;
-    this.appearance = appearance;
-    this.appearanceMeta = appearanceMeta;
-  }
+    public final int appearanceMeta;
 
-  @Deprecated
-  public Meltable(Block block, int meta, float solidAmount, Fluid fluid, float fluidAmount, Block appearance) {
-    this(block, meta, solidAmount, fluid, fluidAmount, appearance, 0);
-  }
+    public Meltable(Block block, int meta, float solidAmount, Fluid fluid, float fluidAmount, Block appearance,
+            int appearanceMeta) {
+        this.block = block;
+        this.meta = meta;
+        this.solidVolume = solidAmount;
+        this.fluid = fluid;
+        this.fluidVolume = fluidAmount;
+        this.appearance = appearance;
+        this.appearanceMeta = appearanceMeta;
+    }
 
-  public IIcon getIcon() {
-    return this.appearance.getIcon(0, this.appearanceMeta);
-  }
+    @Deprecated
+    public Meltable(Block block, int meta, float solidAmount, Fluid fluid, float fluidAmount, Block appearance) {
+        this(block, meta, solidAmount, fluid, fluidAmount, appearance, 0);
+    }
+
+    public IIcon getIcon() {
+        return this.appearance.getIcon(0, this.appearanceMeta);
+    }
 }

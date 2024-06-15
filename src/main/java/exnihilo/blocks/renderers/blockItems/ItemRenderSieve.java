@@ -1,14 +1,16 @@
 package exnihilo.blocks.renderers.blockItems;
 
-import exnihilo.blocks.models.ModelSieve;
+import java.util.Objects;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
 
-import java.util.Objects;
+import exnihilo.blocks.models.ModelSieve;
 
 public class ItemRenderSieve implements IItemRenderer {
 

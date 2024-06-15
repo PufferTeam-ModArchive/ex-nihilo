@@ -1,8 +1,8 @@
 package exnihilo.registries.helpers;
 
-import net.minecraft.block.Block;
-
 import java.util.Objects;
+
+import net.minecraft.block.Block;
 
 public class HeatSource {
 
@@ -29,7 +29,8 @@ public class HeatSource {
         if (!(o instanceof HeatSource other)) return false;
         if (!other.canEqual(this)) return false;
         Object this$block = this.block, other$block = other.block;
-        return (Objects.equals(this$block, other$block)) && (this.meta == other.meta && (Float.compare(this.value, other.value) == 0));
+        return (Objects.equals(this$block, other$block))
+                && (this.meta == other.meta && (Float.compare(this.value, other.value) == 0));
     }
 
     public HeatSource(Block block, int meta, float value) {

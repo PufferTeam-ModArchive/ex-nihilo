@@ -1,5 +1,11 @@
 package exnihilo.proxies;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderSnowball;
+import net.minecraft.item.Item;
+import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import exnihilo.ENBlocks;
@@ -26,11 +32,6 @@ import exnihilo.blocks.tileentities.TileEntityCrucibleUnfired;
 import exnihilo.blocks.tileentities.TileEntityLeavesInfested;
 import exnihilo.blocks.tileentities.TileEntitySieve;
 import exnihilo.entities.EntityStone;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderSnowball;
-import net.minecraft.item.Item;
-import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
 
 public class ClientProxy extends Proxy {
 
@@ -46,11 +47,13 @@ public class ClientProxy extends Proxy {
         ModelBarrel barrel = new ModelBarrel();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBarrel.class, new RenderBarrel(barrel));
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.Barrel), new ItemRenderBarrel(barrel));
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.BarrelStone), new ItemRenderBarrel(barrel));
+        MinecraftForgeClient
+                .registerItemRenderer(Item.getItemFromBlock(ENBlocks.BarrelStone), new ItemRenderBarrel(barrel));
 
         ModelBlock block = new ModelBlock();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLeavesInfested.class, new RenderLeaves(block));
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.LeavesInfested), new ItemRenderLeaves(block));
+        MinecraftForgeClient
+                .registerItemRenderer(Item.getItemFromBlock(ENBlocks.LeavesInfested), new ItemRenderLeaves(block));
 
         ModelSieve sieve = new ModelSieve();
         ModelSieveMesh mesh = new ModelSieveMesh();
@@ -59,11 +62,15 @@ public class ClientProxy extends Proxy {
 
         ModelCrucible crucible = new ModelCrucible();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrucible.class, new RenderCrucible(crucible));
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.Crucible), new ItemRenderCrucible(crucible));
+        MinecraftForgeClient
+                .registerItemRenderer(Item.getItemFromBlock(ENBlocks.Crucible), new ItemRenderCrucible(crucible));
 
         ModelCrucibleRaw crucibleRaw = new ModelCrucibleRaw();
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrucibleUnfired.class, new RenderCrucibleUnfired(crucibleRaw));
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.CrucibleUnfired), new ItemRenderCrucibleUnfired(crucibleRaw));
+        ClientRegistry
+                .bindTileEntitySpecialRenderer(TileEntityCrucibleUnfired.class, new RenderCrucibleUnfired(crucibleRaw));
+        MinecraftForgeClient.registerItemRenderer(
+                Item.getItemFromBlock(ENBlocks.CrucibleUnfired),
+                new ItemRenderCrucibleUnfired(crucibleRaw));
 
         RenderingRegistry.registerEntityRenderingHandler(EntityStone.class, new RenderSnowball(ENItems.Stones));
     }

@@ -1,14 +1,16 @@
 package exnihilo.blocks.renderers.blockItems;
 
-import exnihilo.blocks.models.ModelBarrel;
+import java.util.Objects;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
 
-import java.util.Objects;
+import exnihilo.blocks.models.ModelBarrel;
 
 public class ItemRenderBarrel implements IItemRenderer {
 
@@ -25,7 +27,7 @@ public class ItemRenderBarrel implements IItemRenderer {
 
     @Override
     public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item,
-        IItemRenderer.ItemRendererHelper helper) {
+            IItemRenderer.ItemRendererHelper helper) {
         return Objects.requireNonNull(type) != ItemRenderType.FIRST_PERSON_MAP;
     }
 

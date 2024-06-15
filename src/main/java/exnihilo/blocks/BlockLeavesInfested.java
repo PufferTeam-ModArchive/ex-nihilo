@@ -1,15 +1,8 @@
 package exnihilo.blocks;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import exnihilo.blocks.tileentities.TileEntityLeavesInfested;
-import exnihilo.data.BlockData;
-import exnihilo.data.ModData;
-import exnihilo.registries.ColorRegistry;
-
 import java.util.Random;
 
+import exnihilo.ExNihilo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.ITileEntityProvider;
@@ -23,6 +16,14 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import exnihilo.blocks.tileentities.TileEntityLeavesInfested;
+import exnihilo.config.CrookConfig;
+import exnihilo.data.BlockData;
+import exnihilo.registries.ColorRegistry;
+
 public class BlockLeavesInfested extends BlockLeaves implements ITileEntityProvider {
 
     int[] adjacentTreeBlocks;
@@ -32,7 +33,7 @@ public class BlockLeavesInfested extends BlockLeaves implements ITileEntityProvi
         setHardness(0.4F);
         setLightOpacity(1);
         setStepSound(soundTypeGrass);
-        setBlockName(ModData.ID + "." + BlockData.LEAVES_INFESTED_KEY);
+        setBlockName(ExNihilo.MODID + "." + BlockData.LEAVES_INFESTED_KEY);
         GameRegistry.registerTileEntity(TileEntityLeavesInfested.class, getUnlocalizedName());
     }
 
@@ -59,11 +60,8 @@ public class BlockLeavesInfested extends BlockLeaves implements ITileEntityProvi
                         for (int i2 = -b0; i2 <= b0; i2++) {
                             for (int j2 = -b0; j2 <= b0; j2++) {
                                 Block block = par1World.getBlock(par2 + i, par3 + i2, par4 + j2);
-                                if (block != null && block.canSustainLeaves(
-                                    par1World,
-                                    par2 + i,
-                                    par3 + i2,
-                                    par4 + j2)) {
+                                if (block != null
+                                        && block.canSustainLeaves(par1World, par2 + i, par3 + i2, par4 + j2)) {
                                     this.adjacentTreeBlocks[(i + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = 0;
                                 } else if (block != null && block.isLeaves(par1World, par2 + i, par3 + i2, par4 + j2)) {
                                     this.adjacentTreeBlocks[(i + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = -2;
@@ -79,22 +77,22 @@ public class BlockLeavesInfested extends BlockLeaves implements ITileEntityProvi
                                 for (int k2 = -b0; k2 <= b0; k2++) {
                                     if (this.adjacentTreeBlocks[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1] == i - 1) {
                                         if (this.adjacentTreeBlocks[(i2 + k1 - 1) * j1 + (j2 + k1) * b1 + k2 + k1]
-                                            == -2)
+                                                == -2)
                                             this.adjacentTreeBlocks[(i2 + k1 - 1) * j1 + (j2 + k1) * b1 + k2 + k1] = i;
                                         if (this.adjacentTreeBlocks[(i2 + k1 + 1) * j1 + (j2 + k1) * b1 + k2 + k1]
-                                            == -2)
+                                                == -2)
                                             this.adjacentTreeBlocks[(i2 + k1 + 1) * j1 + (j2 + k1) * b1 + k2 + k1] = i;
                                         if (this.adjacentTreeBlocks[(i2 + k1) * j1 + (j2 + k1 - 1) * b1 + k2 + k1]
-                                            == -2)
+                                                == -2)
                                             this.adjacentTreeBlocks[(i2 + k1) * j1 + (j2 + k1 - 1) * b1 + k2 + k1] = i;
                                         if (this.adjacentTreeBlocks[(i2 + k1) * j1 + (j2 + k1 + 1) * b1 + k2 + k1]
-                                            == -2)
+                                                == -2)
                                             this.adjacentTreeBlocks[(i2 + k1) * j1 + (j2 + k1 + 1) * b1 + k2 + k1] = i;
                                         if (this.adjacentTreeBlocks[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1 - 1]
-                                            == -2)
+                                                == -2)
                                             this.adjacentTreeBlocks[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1 - 1] = i;
                                         if (this.adjacentTreeBlocks[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1 + 1]
-                                            == -2)
+                                                == -2)
                                             this.adjacentTreeBlocks[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1 + 1] = i;
                                     }
                                 }
@@ -175,10 +173,11 @@ public class BlockLeavesInfested extends BlockLeaves implements ITileEntityProvi
         if (!world.isRemote) {
             TileEntityLeavesInfested leaves = (TileEntityLeavesInfested) world.getTileEntity(x, y, z);
             if (leaves != null) {
-                if (world.rand.nextFloat() < leaves.getProgress() * (float) ModData.SILKWORM_STRING_PROBABILITY)
+                if (world.rand.nextFloat() < leaves.getProgress() * (float) CrookConfig.infestedLeafStringChance)
                     dropBlockAsItem(world, x, y, z, new ItemStack(Items.string, 1, 0));
-                if (world.rand.nextFloat() < leaves.getProgress() * (float) (ModData.SILKWORM_STRING_PROBABILITY
-                    / 4.0D)) dropBlockAsItem(world, x, y, z, new ItemStack(Items.string, 1, 0));
+                if (world.rand.nextFloat()
+                        < leaves.getProgress() * (float) (CrookConfig.infestedLeafStringChance / 4.0D))
+                    dropBlockAsItem(world, x, y, z, new ItemStack(Items.string, 1, 0));
             }
         }
         return world.setBlockToAir(x, y, z);

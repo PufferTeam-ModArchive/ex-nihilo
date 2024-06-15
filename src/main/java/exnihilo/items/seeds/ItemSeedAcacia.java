@@ -8,37 +8,38 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.EnumPlantType;
 
 public class ItemSeedAcacia extends ItemSeedBase {
-  public ItemSeedAcacia() {
-    super(Blocks.sapling, Blocks.dirt);
-  }
 
-  @Override
-  public Block getPlant(IBlockAccess world, int x, int y, int z) {
-    return Blocks.sapling;
-  }
+    public ItemSeedAcacia() {
+        super(Blocks.sapling, Blocks.dirt);
+    }
 
-  @Override
-  public int getPlantMetadata(IBlockAccess world, int x, int y, int z) {
-    return 4;
-  }
+    @Override
+    public Block getPlant(IBlockAccess world, int x, int y, int z) {
+        return Blocks.sapling;
+    }
 
-  @Override
-  public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z) {
-    return EnumPlantType.Plains;
-  }
+    @Override
+    public int getPlantMetadata(IBlockAccess world, int x, int y, int z) {
+        return 4;
+    }
 
-  @Override
-  public String getUnlocalizedName() {
-    return "exnihilo.seed_acacia";
-  }
+    @Override
+    public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z) {
+        return EnumPlantType.Plains;
+    }
 
-  @Override
-  public String getUnlocalizedName(ItemStack item) {
-    return "exnihilo.seed_acacia";
-  }
+    @Override
+    public String getUnlocalizedName() {
+        return "exnihilo.seed_acacia";
+    }
 
-  @Override
-  public void registerIcons(IIconRegister register) {
-    this.itemIcon = register.registerIcon("exnihilo:ItemSeedAcacia");
-  }
+    @Override
+    public String getUnlocalizedName(ItemStack item) {
+        return "exnihilo.seed_acacia";
+    }
+
+    @Override
+    public void registerIcons(IIconRegister register) {
+        this.itemIcon = register.registerIcon("exnihilo:ItemSeedAcacia");
+    }
 }

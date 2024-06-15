@@ -4,24 +4,25 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
 public class Smashable {
-  public final Block source;
 
-  public final int sourceMeta;
+    public final Block source;
 
-  public final Item item;
+    public final int sourceMeta;
 
-  public final int meta;
+    public final Item item;
 
-  public float chance;
+    public final int meta;
 
-  public final float luckMultiplier;
+    public float chance;
 
-  public Smashable(Block source, int sourceMeta, Item item, int meta, float chance, float luckMultiplier) {
-    this.source = source;
-    this.sourceMeta = sourceMeta;
-    this.item = item;
-    this.meta = meta;
-    this.chance = chance;
-    this.luckMultiplier = luckMultiplier;
-  }
+    public final float luckMultiplier;
+
+    public Smashable(Block source, int sourceMeta, Item item, int meta, float chance, float luckMultiplier) {
+        this.source = source;
+        this.sourceMeta = sourceMeta;
+        this.item = item;
+        this.meta = meta;
+        this.chance = chance;
+        this.luckMultiplier = luckMultiplier;
+    }
 }

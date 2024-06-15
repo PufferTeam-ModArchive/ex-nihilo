@@ -16,7 +16,7 @@ public enum CrookType {
     private final Item.ToolMaterial material;
 
     CrookType(String name, int durability, Item.ToolMaterial material) {
-        this.name = "crook_"+name;
+        this.name = "crook_" + name;
         this.durability = durability;
         this.material = material;
     }

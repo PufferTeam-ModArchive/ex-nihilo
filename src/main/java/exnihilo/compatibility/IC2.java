@@ -1,19 +1,5 @@
 package exnihilo.compatibility;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.registry.GameRegistry;
-import exnihilo.ENBlocks;
-import exnihilo.ExNihilo;
-import exnihilo.data.ModData;
-import exnihilo.items.seeds.ItemSeedRubber;
-import exnihilo.registries.CompostRegistry;
-import exnihilo.registries.SieveRegistry;
-import exnihilo.registries.helpers.Color;
-import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeInputItemStack;
-import ic2.api.recipe.RecipeOutput;
-import ic2.api.recipe.Recipes;
-
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -22,6 +8,21 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.registry.GameRegistry;
+import exnihilo.ENBlocks;
+import exnihilo.ExNihilo;
+import exnihilo.config.GeneralConfig;
+import exnihilo.config.SieveConfig;
+import exnihilo.items.seeds.ItemSeedRubber;
+import exnihilo.registries.CompostRegistry;
+import exnihilo.registries.SieveRegistry;
+import exnihilo.registries.helpers.Color;
+import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputItemStack;
+import ic2.api.recipe.RecipeOutput;
+import ic2.api.recipe.Recipes;
 
 public class IC2 {
 
@@ -32,8 +33,10 @@ public class IC2 {
     public static void loadCompatibility() {
         ArrayList<ItemStack> ores = OreDictionary.getOres("dustSulfur");
         if (ores.size() > 0) {
-            ItemStack sulfur = ores.toArray(new ItemStack[0])[0];
-            SieveRegistry.register(ENBlocks.Dust, 0, sulfur.getItem(), sulfur.getItemDamage(), 32);
+            if (SieveConfig.enableDefaultSieveRewards) {
+                ItemStack sulfur = ores.toArray(new ItemStack[0])[0];
+                SieveRegistry.register(ENBlocks.Dust, 0, sulfur.getItem(), sulfur.getItemDamage(), 32);
+            }
             ExNihilo.log.info("Sulfur was successfully integrated");
         } else {
             ExNihilo.log.error("SULFUR WAS NOT INTEGRATED");
@@ -47,7 +50,9 @@ public class IC2 {
         }
         Item crushedOres = GameRegistry.findItem("IC2", "itemCrushedOre");
         if (crushedOres != null) {
-            SieveRegistry.register(Blocks.sand, 0, crushedOres, 4, 48);
+            if (SieveConfig.enableDefaultSieveRewards) {
+                SieveRegistry.register(Blocks.sand, 0, crushedOres, 4, 48);
+            }
             ExNihilo.log.info("Crushed Ores were successfully integrated");
         } else {
             ExNihilo.log.error("CRUSHED ORES WERE NOT INTEGRATED");
@@ -66,7 +71,7 @@ public class IC2 {
         } else {
             ExNihilo.log.error("COMPRESSED PLANTS WERE NOT INTEGRATED");
         }
-        if (ModData.OVERWRITE_DEFAULT_MACERATOR_RECIPES) {
+        if (GeneralConfig.overwriteIC2Macerator) {
             Map<IRecipeInput, RecipeOutput> recipes = Recipes.macerator.getRecipes();
             IRecipeInput cobbleRecipe = null;
             IRecipeInput gravelRecipe = null;
@@ -87,20 +92,18 @@ public class IC2 {
                 ExNihilo.log.error("DEFAULT GRAVEL TO FLINT MACERATOR RECIPE WASN'T REMOVED");
             }
             Recipes.macerator.addRecipe(
-                new RecipeInputItemStack(new ItemStack(Blocks.cobblestone)),
-                null,
-                new ItemStack(Blocks.gravel));
+                    new RecipeInputItemStack(new ItemStack(Blocks.cobblestone)),
+                    null,
+                    new ItemStack(Blocks.gravel));
             ExNihilo.log.info("Macerator: added recipe for cobble->gravel");
             Recipes.macerator.addRecipe(
-                new RecipeInputItemStack(new ItemStack(Blocks.gravel)),
-                null,
-                new ItemStack(Blocks.sand));
+                    new RecipeInputItemStack(new ItemStack(Blocks.gravel)),
+                    null,
+                    new ItemStack(Blocks.sand));
             ExNihilo.log.info("Macerator: added recipe for gravel->sand");
         }
-        Recipes.macerator.addRecipe(
-            new RecipeInputItemStack(new ItemStack(Blocks.sand)),
-            null,
-            new ItemStack(ENBlocks.Dust));
+        Recipes.macerator
+                .addRecipe(new RecipeInputItemStack(new ItemStack(Blocks.sand)), null, new ItemStack(ENBlocks.Dust));
         ExNihilo.log.info("Macerator: added recipe sand->dust");
         ExNihilo.log.info("--- IC2 Integration Complete!");
     }

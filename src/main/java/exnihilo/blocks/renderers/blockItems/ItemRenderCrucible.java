@@ -1,13 +1,15 @@
 package exnihilo.blocks.renderers.blockItems;
 
-import exnihilo.blocks.models.ModelCrucible;
+import java.util.Objects;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
 
-import java.util.Objects;
+import exnihilo.blocks.models.ModelCrucible;
 
 public class ItemRenderCrucible implements IItemRenderer {
 

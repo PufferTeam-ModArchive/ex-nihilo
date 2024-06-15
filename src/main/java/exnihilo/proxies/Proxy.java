@@ -1,8 +1,9 @@
 package exnihilo.proxies;
 
+import net.minecraft.world.World;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.world.World;
 
 public class Proxy {
 

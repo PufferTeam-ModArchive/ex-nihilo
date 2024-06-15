@@ -1,8 +1,9 @@
 package exnihilo.proxies;
 
-import exnihilo.ExNihilo;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+
+import exnihilo.ExNihilo;
 
 public class ServerProxy extends Proxy {
 

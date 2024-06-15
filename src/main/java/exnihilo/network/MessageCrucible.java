@@ -4,41 +4,42 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 
 public class MessageCrucible implements IMessage {
-  public int x;
 
-  public int y;
+    public int x;
 
-  public int z;
+    public int y;
 
-  public float fluidVolume;
+    public int z;
 
-  public float solidVolume;
+    public float fluidVolume;
 
-  public MessageCrucible() {}
+    public float solidVolume;
 
-  public MessageCrucible(int x, int y, int z, float fluidVolume, float solidVolume) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.fluidVolume = fluidVolume;
-    this.solidVolume = solidVolume;
-  }
+    public MessageCrucible() {}
 
-  @Override
-  public void fromBytes(ByteBuf buf) {
-    this.x = buf.readInt();
-    this.y = buf.readInt();
-    this.z = buf.readInt();
-    this.fluidVolume = buf.readFloat();
-    this.solidVolume = buf.readFloat();
-  }
+    public MessageCrucible(int x, int y, int z, float fluidVolume, float solidVolume) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.fluidVolume = fluidVolume;
+        this.solidVolume = solidVolume;
+    }
 
-  @Override
-  public void toBytes(ByteBuf buf) {
-    buf.writeInt(this.x);
-    buf.writeInt(this.y);
-    buf.writeInt(this.z);
-    buf.writeFloat(this.fluidVolume);
-    buf.writeFloat(this.solidVolume);
-  }
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        this.x = buf.readInt();
+        this.y = buf.readInt();
+        this.z = buf.readInt();
+        this.fluidVolume = buf.readFloat();
+        this.solidVolume = buf.readFloat();
+    }
+
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeInt(this.x);
+        buf.writeInt(this.y);
+        buf.writeInt(this.z);
+        buf.writeFloat(this.fluidVolume);
+        buf.writeFloat(this.solidVolume);
+    }
 }

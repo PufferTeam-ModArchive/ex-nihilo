@@ -1,10 +1,10 @@
 package exnihilo.utils;
 
+import java.util.Objects;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.Objects;
 
 public class BlockInfo {
 
@@ -43,17 +43,16 @@ public class BlockInfo {
     }
 
     public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof BlockInfo other))
-            return false;
-        if (!other.canEqual(this))
-            return false;
+        if (o == this) return true;
+        if (!(o instanceof BlockInfo other)) return false;
+        if (!other.canEqual(this)) return false;
         Object this$block = getBlock(), other$block = other.getBlock();
         return (Objects.equals(this$block, other$block)) && (getMeta() == other.getMeta());
     }
 
-    protected boolean canEqual(Object other) { return other instanceof BlockInfo; }
+    protected boolean canEqual(Object other) {
+        return other instanceof BlockInfo;
+    }
 
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         String key = Block.blockRegistry.getNameForObject(block);
@@ -68,4 +67,3 @@ public class BlockInfo {
         return block == null ? EMPTY : new BlockInfo(block, meta);
     }
 }
-

@@ -1,19 +1,18 @@
 package exnihilo.events;
 
+import java.util.ArrayList;
+
+import net.minecraft.block.Block;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
+import net.minecraftforge.event.world.BlockEvent;
+
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import exnihilo.items.hammers.IHammer;
 import exnihilo.registries.HammerRegistry;
 import exnihilo.registries.helpers.Smashable;
-
-import java.util.ArrayList;
-
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
-import net.minecraftforge.event.world.BlockEvent;
 
 public class HandlerHammer {
 
