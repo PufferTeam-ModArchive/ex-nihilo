@@ -1,37 +1,37 @@
 package exnihilo.items.meshes;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
-public class ItemMesh extends Item {
+public abstract class ItemMesh extends Item {
 
-    private final MeshType type;
+    protected IIcon sieveRenderIcon;
 
-    public ItemMesh(@Nonnull MeshType type) {
-        this.type = type;
+    public ItemMesh() {
         setCreativeTab(CreativeTabs.tabMisc);
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "exnihilo." + type.getName();
+        return "exnihilo." + this.getName();
     }
 
     @Override
     public String getUnlocalizedName(ItemStack item) {
-        return "exnihilo." + type.getName();
-    }
-
-    public MeshType getType() {
-        return this.type;
+        return "exnihilo." + this.getName();
     }
 
     @Override
     public void registerIcons(IIconRegister register) {
-        this.itemIcon = register.registerIcon("exnihilo:" + type.getName());
+        this.itemIcon = register.registerIcon("exnihilo:" + this.getName());
     }
+
+    public void registerSieveRenderIcon(IIconRegister register) {
+        this.sieveRenderIcon = register.registerIcon("exnihilo:" + this.getName());
+    }
+
+    public abstract String getName();
 }

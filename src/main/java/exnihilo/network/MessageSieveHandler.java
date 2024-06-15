@@ -1,5 +1,6 @@
 package exnihilo.network;
 
+import exnihilo.registries.MeshRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
@@ -9,7 +10,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import exnihilo.blocks.tileentities.TileEntitySieve;
-import exnihilo.items.meshes.MeshType;
 import exnihilo.utils.BlockInfo;
 
 public class MessageSieveHandler implements IMessageHandler<MessageSieve, IMessage> {
@@ -19,7 +19,11 @@ public class MessageSieveHandler implements IMessageHandler<MessageSieve, IMessa
         World world = (Minecraft.getMinecraft()).thePlayer.worldObj;
         if (world.getTileEntity(message.x, message.y, message.z) != null) {
             TileEntitySieve te = (TileEntitySieve) world.getTileEntity(message.x, message.y, message.z);
-            te.setMeshType(MeshType.getValues()[message.meshType]);
+            if (message.meshId.equals("null")) {
+                te.setCurrentMesh(null);
+            } else {
+                te.setCurrentMesh(MeshRegistry.INSTANCE.get(message.meshId));
+            }
             te.setProgress(message.progress);
             Block block = (Block) Block.blockRegistry.getObject(message.blockName);
             if (block == Blocks.air) {

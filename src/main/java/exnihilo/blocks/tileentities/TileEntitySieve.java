@@ -2,6 +2,8 @@ package exnihilo.blocks.tileentities;
 
 import java.util.ArrayList;
 
+import exnihilo.api.items.IMesh;
+import exnihilo.registries.MeshRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
@@ -12,7 +14,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
-import exnihilo.items.meshes.MeshType;
 import exnihilo.network.ENPacketHandler;
 import exnihilo.network.MessageSieve;
 import exnihilo.network.VanillaPacket;
@@ -27,7 +28,7 @@ public class TileEntitySieve extends TileEntity {
     private static final float MAX_RENDER_CAPACITY = 0.9F;
     private static final float PROCESSING_INTERVAL = 0.075F;
 
-    private MeshType meshType = MeshType.NONE;
+    private IMesh currentMesh;
 
     private BlockInfo currentStack = BlockInfo.EMPTY;
     private float progress = 0;
@@ -36,9 +37,9 @@ public class TileEntitySieve extends TileEntity {
     public TileEntitySieve() {}
 
     public void addSievable(Block block, int blockMeta) {
-        if (meshType == MeshType.NONE || currentStack != BlockInfo.EMPTY) return;
+        if (currentMesh == null || currentStack != BlockInfo.EMPTY) return;
         ItemInfo itemInfo = new ItemInfo(Item.getItemFromBlock(block), blockMeta);
-        if (SieveRegistry.getSiftingOutput(itemInfo, this.meshType) != null) {
+        if (SieveRegistry.getSiftingOutput(itemInfo, this.currentMesh) != null) {
             this.currentStack = new BlockInfo(block, blockMeta);
             sendPacketUpdate();
         }
@@ -46,13 +47,17 @@ public class TileEntitySieve extends TileEntity {
 
     private void sendPacketUpdate() {
         if (this.worldObj.isRemote) return;
+        String meshId = "null";
+        if (this.currentMesh != null) {
+            meshId = MeshRegistry.INSTANCE.get(this.currentMesh);
+        }
         ENPacketHandler.sendToAllAround(
                 new MessageSieve(
                         this.xCoord,
                         this.yCoord,
                         this.zCoord,
                         this.progress,
-                        this.meshType.ordinal(),
+                        meshId,
                         this.getCurrentStack().getMeta(),
                         Block.blockRegistry.getNameForObject(this.getCurrentStack().getBlock())),
                 this);
@@ -75,7 +80,7 @@ public class TileEntitySieve extends TileEntity {
             ItemInfo itemInfo = new ItemInfo(
                     Item.getItemFromBlock(this.currentStack.getBlock()),
                     this.currentStack.getMeta());
-            final ArrayList<SiftingResult> rewards = SieveRegistry.getSiftingOutput(itemInfo, this.meshType);
+            final ArrayList<SiftingResult> rewards = SieveRegistry.getSiftingOutput(itemInfo, this.currentMesh);
             if (rewards != null && rewards.size() > 0) {
                 for (final SiftingResult reward : rewards) {
                     if (this.worldObj.rand.nextInt(reward.rarity) == 0) {
@@ -110,7 +115,12 @@ public class TileEntitySieve extends TileEntity {
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         if (compound.hasKey("stack")) this.currentStack = BlockInfo.readFromNBT(compound.getCompoundTag("stack"));
-        this.meshType = MeshType.getValues()[compound.getShort("mesh")];
+        String currentMesh = compound.getString("mesh");
+        if (currentMesh.equals("null")) {
+            this.currentMesh = null;
+        } else {
+            this.currentMesh = MeshRegistry.INSTANCE.get(compound.getString("mesh"));
+        }
         this.progress = compound.getFloat("progress");
     }
 
@@ -121,17 +131,21 @@ public class TileEntitySieve extends TileEntity {
             NBTTagCompound stackTag = currentStack.writeToNBT(new NBTTagCompound());
             compound.setTag("stack", stackTag);
         }
-        compound.setShort("mesh", (short) this.meshType.ordinal());
+        if (this.getCurrentMesh() != null) {
+            compound.setString("mesh", MeshRegistry.INSTANCE.get(this.currentMesh));
+        } else {
+            compound.setString("mesh", "null");
+        }
         compound.setFloat("progress", this.progress);
     }
 
-    public void setMeshType(MeshType type) {
-        this.meshType = type;
+    public void setCurrentMesh(IMesh mesh) {
+        this.currentMesh = mesh;
         sendPacketUpdate();
     }
 
-    public MeshType getMeshType() {
-        return this.meshType;
+    public IMesh getCurrentMesh() {
+        return this.currentMesh;
     }
 
     public void setCurrentStack(BlockInfo info) {

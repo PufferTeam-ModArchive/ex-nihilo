@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import exnihilo.api.items.IMesh;
+import exnihilo.registries.MeshRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -19,8 +21,6 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import exnihilo.items.meshes.ItemMesh;
-import exnihilo.items.meshes.MeshType;
 import exnihilo.registries.SieveRegistry;
 import exnihilo.registries.helpers.SiftingResult;
 import exnihilo.utils.ItemInfo;
@@ -52,11 +52,11 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
             return null;
         }
 
-        public CachedSieveRecipe(List<ItemStack> variations, MeshType meshType, ItemStack base, ItemStack focus) {
+        public CachedSieveRecipe(List<ItemStack> variations, IMesh mesh, ItemStack base, ItemStack focus) {
             super();
             PositionedStack pstack_item = new PositionedStack((base != null) ? base : variations, 11, 3);
             PositionedStack pstack_mesh = new PositionedStack(
-                    new ItemStack(MeshType.getItemForType(meshType), 1, 0),
+                    new ItemStack(mesh.getItem(), 1, 0),
                     11,
                     39);
             pstack_item.setMaxSize(1);
@@ -88,15 +88,15 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
         return "exnihilo:textures/sieveNEI.png";
     }
 
-    private void addCached(List<ItemStack> variations, MeshType meshType, ItemStack base, ItemStack focus) {
+    private void addCached(List<ItemStack> variations, IMesh mesh, ItemStack base, ItemStack focus) {
         if (variations.size() > 21) {
             List<List<ItemStack>> parts = new ArrayList<>();
             int size = variations.size();
             for (int i = 0; i < size; i += 21)
                 parts.add(new ArrayList<>(variations.subList(i, Math.min(size, i + 21))));
-            for (List<ItemStack> part : parts) this.arecipes.add(new CachedSieveRecipe(part, meshType, base, focus));
+            for (List<ItemStack> part : parts) this.arecipes.add(new CachedSieveRecipe(part, mesh, base, focus));
         } else {
-            this.arecipes.add(new CachedSieveRecipe(variations, meshType, base, focus));
+            this.arecipes.add(new CachedSieveRecipe(variations, mesh, base, focus));
         }
     }
 
@@ -123,14 +123,13 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
     @Override
     public void loadCraftingRecipes(String outputID, Object... results) {
         if (outputID.equals("exnihilo.sieve")) {
-            for (MeshType meshType : MeshType.getValues()) {
-                if (meshType == MeshType.NONE) continue;
-                for (ItemInfo ii : SieveRegistry.getSiftables().get(meshType).keySet()) {
+            for (IMesh mesh : MeshRegistry.INSTANCE.getRegistry().values()) {
+                for (ItemInfo ii : SieveRegistry.getSiftables().get(mesh).keySet()) {
                     ItemStack inputStack = ii.getStack();
                     ArrayList<ItemStack> resultStacks = new ArrayList<>();
-                    for (SiftingResult s : SieveRegistry.getSiftingOutput(ii, meshType))
+                    for (SiftingResult s : SieveRegistry.getSiftingOutput(ii, mesh))
                         resultStacks.add(new ItemStack(s.drop.getItem(), 1, s.drop.getMeta()));
-                    addCached(resultStacks, meshType, inputStack, null);
+                    addCached(resultStacks, mesh, inputStack, null);
                 }
             }
         } else {
@@ -140,7 +139,7 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
 
     @Override
     public void loadCraftingRecipes(ItemStack result) {
-        for (Map.Entry<MeshType, ArrayList<ItemInfo>> set : SieveRegistry.getSources(result).entrySet()) {
+        for (Map.Entry<IMesh, ArrayList<ItemInfo>> set : SieveRegistry.getSources(result).entrySet()) {
             for (ItemInfo ii : set.getValue()) {
                 HashMap<ItemInfo, Integer> stored = new HashMap<>();
                 for (SiftingResult results : SieveRegistry
@@ -166,15 +165,15 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
     @Override
     public void loadUsageRecipes(ItemStack ingredient) {
         if (Block.getBlockFromItem(ingredient.getItem()) == Blocks.air) return;
-        for (MeshType meshType : MeshType.getValues()) {
+        for (IMesh mesh : MeshRegistry.INSTANCE.getRegistry().values()) {
             HashMap<ItemInfo, Integer> stored = new HashMap<>();
             if (!SieveRegistry
-                    .registered(Block.getBlockFromItem(ingredient.getItem()), ingredient.getItemDamage(), meshType))
+                    .registered(Block.getBlockFromItem(ingredient.getItem()), ingredient.getItemDamage(), mesh))
                 continue;
             for (SiftingResult results : SieveRegistry.getSiftingOutput(
                     Block.getBlockFromItem(ingredient.getItem()),
                     ingredient.getItemDamage(),
-                    meshType)) {
+                    mesh)) {
                 ItemInfo current = results.drop;
                 if (stored.containsKey(current)) {
                     stored.put(current, stored.get(current) + 1);
@@ -188,7 +187,7 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
                 stack.stackSize = stored.get(info);
                 resultStacks.add(stack);
             }
-            addCached(resultStacks, meshType, ingredient, ingredient);
+            addCached(resultStacks, mesh, ingredient, ingredient);
         }
     }
 
@@ -209,7 +208,7 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
             Block inBlock = Block.getBlockFromItem(sourceStack.getItem());
             int meta = sourceStack.getItemDamage();
             for (SiftingResult smash : SieveRegistry
-                    .getSiftingOutput(inBlock, meta, ((ItemMesh) crecipe.input.get(1).item.getItem()).getType())) {
+                    .getSiftingOutput(inBlock, meta, (IMesh) crecipe.input.get(1).item.getItem())) {
                 if (NEIServerUtils.areStacksSameTypeCrafting(
                         itemStack,
                         new ItemStack(smash.drop.getItem(), 1, smash.drop.getMeta()))) {

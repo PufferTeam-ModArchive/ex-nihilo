@@ -3,6 +3,8 @@ package exnihilo.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
+import exnihilo.ENItems;
+import exnihilo.api.items.IMesh;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -24,8 +26,6 @@ import exnihilo.ExNihilo;
 import exnihilo.blocks.tileentities.TileEntitySieve;
 import exnihilo.config.SieveConfig;
 import exnihilo.data.BlockData;
-import exnihilo.items.meshes.ItemMesh;
-import exnihilo.items.meshes.MeshType;
 import exnihilo.registries.SieveRegistry;
 import exnihilo.registries.helpers.SiftingResult;
 import exnihilo.utils.BlockInfo;
@@ -49,9 +49,10 @@ public class BlockSieve extends BlockContainer {
 
     @Override
     public void registerBlockIcons(IIconRegister register) {
-        for (MeshType mesh : MeshType.getValues()) {
-            mesh.registerMeshRenderIcon(register);
-        }
+        ENItems.MeshSilk.registerSieveRenderIcon(register);
+        ENItems.MeshFlint.registerSieveRenderIcon(register);
+        ENItems.MeshIron.registerSieveRenderIcon(register);
+        ENItems.MeshDiamond.registerSieveRenderIcon(register);
         this.blockIcon = Blocks.planks.getIcon(0, 0);
     }
 
@@ -105,7 +106,7 @@ public class BlockSieve extends BlockContainer {
 
         ItemStack held = player.getCurrentEquippedItem();
 
-        if (held == null && sieve.getMeshType() != MeshType.NONE
+        if (held == null && sieve.getCurrentMesh() != null
                 && player.isSneaking()
                 && sieve.getCurrentStack() == BlockInfo.EMPTY) {
             EntityItem entityItem = new EntityItem(
@@ -113,21 +114,21 @@ public class BlockSieve extends BlockContainer {
                     sieve.xCoord + 0.5D,
                     sieve.yCoord + 1.5D,
                     sieve.zCoord + 0.5D,
-                    new ItemStack(MeshType.getItemForType(sieve.getMeshType()), 1, 0));
-            sieve.setMeshType(MeshType.NONE);
+                    new ItemStack(sieve.getCurrentMesh().getItem(), 1, 0));
+            sieve.setCurrentMesh(null);
             world.spawnEntityInWorld(entityItem);
             return true;
         }
 
         if (sieve.getCurrentStack() == BlockInfo.EMPTY && held != null) {
             // Handle inserting mesh
-            if (sieve.getMeshType() == MeshType.NONE && held.getItem() instanceof ItemMesh) {
-                sieve.setMeshType(((ItemMesh) held.getItem()).getType());
+            if (sieve.getCurrentMesh() == null && held.getItem() instanceof IMesh) {
+                sieve.setCurrentMesh((IMesh) held.getItem());
                 removeCurrentItem(player);
                 return true;
             }
-            if (sieve.getMeshType() == MeshType.NONE) return true;
-            ArrayList<SiftingResult> result = SieveRegistry.getSiftingOutput(new ItemInfo(held), sieve.getMeshType());
+            if (sieve.getCurrentMesh() == null) return true;
+            ArrayList<SiftingResult> result = SieveRegistry.getSiftingOutput(new ItemInfo(held), sieve.getCurrentMesh());
             if (result != null) {
                 outerloop: for (int dx = -SIEVE_RADIUS; dx <= SIEVE_RADIUS; dx++) {
                     for (int dz = -SIEVE_RADIUS; dz <= SIEVE_RADIUS; dz++) {
@@ -136,7 +137,7 @@ public class BlockSieve extends BlockContainer {
                         if (!(otherTE instanceof TileEntitySieve otherSieve)) continue; // Not a sieve
 
                         if (otherSieve.getCurrentStack() == BlockInfo.EMPTY
-                                && otherSieve.getMeshType() == sieve.getMeshType()) {
+                                && otherSieve.getCurrentMesh() == sieve.getCurrentMesh()) {
                             otherSieve.addSievable(Block.getBlockFromItem(held.getItem()), held.getItemDamage());
                             held = removeCurrentItem(player);
                         }
@@ -150,7 +151,7 @@ public class BlockSieve extends BlockContainer {
             for (int dz = -SIEVE_RADIUS; dz <= SIEVE_RADIUS; dz++) {
                 final TileEntity te = world.getTileEntity(x + dx, y, z + dz);
                 if ((te instanceof TileEntitySieve teSieve) && teSieve.getCurrentStack() != BlockInfo.EMPTY
-                        && teSieve.getMeshType() == sieve.getMeshType()) {
+                        && teSieve.getCurrentMesh() == sieve.getCurrentMesh()) {
                     teSieve.ProcessContents();
                 }
             }

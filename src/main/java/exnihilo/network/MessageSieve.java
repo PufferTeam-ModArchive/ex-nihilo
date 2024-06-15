@@ -11,19 +11,19 @@ public class MessageSieve implements IMessage {
     public int z;
 
     public float progress;
-    public int meshType;
+    public String meshId;
 
     public String blockName;
     public int blockMeta;
 
     public MessageSieve() {}
 
-    public MessageSieve(int x, int y, int z, float progress, int meshType, int blockMeta, String blockName) {
+    public MessageSieve(int x, int y, int z, float progress, String meshId, int blockMeta, String blockName) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.progress = progress;
-        this.meshType = meshType;
+        this.meshId = meshId;
         this.blockMeta = blockMeta;
         this.blockName = blockName;
     }
@@ -34,7 +34,7 @@ public class MessageSieve implements IMessage {
         this.y = buf.readInt();
         this.z = buf.readInt();
         this.progress = buf.readFloat();
-        this.meshType = buf.readInt();
+        this.meshId = ByteBufUtils.readUTF8String(buf);
         this.blockMeta = buf.readInt();
         this.blockName = ByteBufUtils.readUTF8String(buf);
     }
@@ -45,7 +45,7 @@ public class MessageSieve implements IMessage {
         buf.writeInt(y);
         buf.writeInt(z);
         buf.writeFloat(this.progress);
-        buf.writeInt(this.meshType);
+        ByteBufUtils.writeUTF8String(buf, this.meshId);
         buf.writeInt(this.blockMeta);
         ByteBufUtils.writeUTF8String(buf, this.blockName);
     }

@@ -13,7 +13,6 @@ import exnihilo.blocks.models.ModelSieve;
 import exnihilo.blocks.models.ModelSieveContents;
 import exnihilo.blocks.models.ModelSieveMesh;
 import exnihilo.blocks.tileentities.TileEntitySieve;
-import exnihilo.items.meshes.MeshType;
 
 public class RenderSieve extends TileEntitySpecialRenderer {
 
@@ -47,11 +46,11 @@ public class RenderSieve extends TileEntitySpecialRenderer {
 
     private void renderMesh(TileEntity tileentity, double x, double y, double z, float f) {
         TileEntitySieve sieve = (TileEntitySieve) tileentity;
-        if (sieve.getMeshType() != MeshType.NONE) {
+        if (sieve.getCurrentMesh() != null) {
             GL11.glPushMatrix();
             GL11.glTranslatef((float) x + 0.5F, (float) y + 0.69F, (float) z + 0.5F);
             bindTexture(TextureMap.locationBlocksTexture);
-            this.mesh.render(sieve.getMeshType().getMeshRenderIcon());
+            this.mesh.render(sieve.getCurrentMesh().getSieveRenderIcon());
             GL11.glPopMatrix();
         }
     }

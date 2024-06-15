@@ -1,5 +1,8 @@
 package exnihilo;
 
+import exnihilo.api.items.IMesh;
+import exnihilo.items.meshes.*;
+import exnihilo.registries.MeshRegistry;
 import net.minecraft.item.Item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -16,8 +19,6 @@ import exnihilo.items.dolls.ItemDollAngry;
 import exnihilo.items.dolls.ItemDollCreepy;
 import exnihilo.items.hammers.HammerType;
 import exnihilo.items.hammers.ItemHammer;
-import exnihilo.items.meshes.ItemMesh;
-import exnihilo.items.meshes.MeshType;
 import exnihilo.items.seeds.ItemSeedAcacia;
 import exnihilo.items.seeds.ItemSeedBirch;
 import exnihilo.items.seeds.ItemSeedCactus;
@@ -57,13 +58,13 @@ public class ENItems {
 
     public static Item SilkwormCooked;
 
-    public static Item MeshSilk;
+    public static ItemMesh MeshSilk;
 
-    public static Item MeshFlint;
+    public static ItemMesh MeshFlint;
 
-    public static Item MeshIron;
+    public static ItemMesh MeshIron;
 
-    public static Item MeshDiamond;
+    public static ItemMesh MeshDiamond;
 
     public static Item Stones;
 
@@ -126,14 +127,18 @@ public class ENItems {
         GameRegistry.registerItem(CrookBone, "crook_bone");
         Silkworm = new ItemSilkworm();
         GameRegistry.registerItem(Silkworm, "silkworm");
-        MeshSilk = new ItemMesh(MeshType.SILK);
-        GameRegistry.registerItem(MeshSilk, "mesh");
-        MeshFlint = new ItemMesh(MeshType.FLINT);
-        GameRegistry.registerItem(MeshFlint, MeshType.FLINT.getName());
-        MeshIron = new ItemMesh(MeshType.IRON);
-        GameRegistry.registerItem(MeshIron, MeshType.IRON.getName());
-        MeshDiamond = new ItemMesh(MeshType.DIAMOND);
-        GameRegistry.registerItem(MeshDiamond, MeshType.DIAMOND.getName());
+        MeshSilk = new SilkMesh();
+        GameRegistry.registerItem(MeshSilk, MeshSilk.getName());
+        MeshRegistry.INSTANCE.register("silk", (IMesh) MeshSilk);
+        MeshFlint = new FlintMesh();
+        GameRegistry.registerItem(MeshFlint, MeshFlint.getName());
+        MeshRegistry.INSTANCE.register("flint", (IMesh) MeshFlint);
+        MeshIron = new IronMesh();
+        GameRegistry.registerItem(MeshIron, MeshIron.getName());
+        MeshRegistry.INSTANCE.register("iron", (IMesh) MeshIron);
+        MeshDiamond = new DiamondMesh();
+        GameRegistry.registerItem(MeshDiamond, MeshDiamond.getName());
+        MeshRegistry.INSTANCE.register("diamond", (IMesh) MeshDiamond);
         Spores = new ItemSpores();
         GameRegistry.registerItem(Spores, "spores");
         GrassSeeds = new ItemGrassSeeds();
