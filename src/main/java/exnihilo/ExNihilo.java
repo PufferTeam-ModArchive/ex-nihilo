@@ -3,7 +3,6 @@ package exnihilo;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,8 +87,7 @@ public class ExNihilo {
         proxy.initializeRenderers();
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new HandlerHammer());
-        if (Loader.isModLoaded("notenoughitems"))
-            MinecraftForge.EVENT_BUS.register(new HandlerNEIRecipeHandlerInfo());
+        if (Loader.isModLoaded("notenoughitems")) MinecraftForge.EVENT_BUS.register(new HandlerNEIRecipeHandlerInfo());
     }
 
     @EventHandler

@@ -2,7 +2,6 @@ package exnihilo.blocks;
 
 import java.util.List;
 
-import exnihilo.ExNihilo;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import exnihilo.ExNihilo;
 import exnihilo.blocks.tileentities.TileEntityBarrel;
 import exnihilo.data.BlockData;
 

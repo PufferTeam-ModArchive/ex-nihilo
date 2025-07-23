@@ -3,8 +3,6 @@ package exnihilo.registries;
 import java.util.Hashtable;
 
 import exnihilo.config.ColorConfig;
-import net.minecraftforge.common.config.Configuration;
-
 import exnihilo.registries.helpers.Color;
 
 public class ColorRegistry {

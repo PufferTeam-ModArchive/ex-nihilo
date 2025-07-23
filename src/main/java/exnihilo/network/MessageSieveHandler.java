@@ -1,6 +1,5 @@
 package exnihilo.network;
 
-import exnihilo.registries.MeshRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
@@ -10,6 +9,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import exnihilo.blocks.tileentities.TileEntitySieve;
+import exnihilo.registries.MeshRegistry;
 import exnihilo.utils.BlockInfo;
 
 public class MessageSieveHandler implements IMessageHandler<MessageSieve, IMessage> {

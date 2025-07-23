@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 

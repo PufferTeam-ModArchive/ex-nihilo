@@ -1,9 +1,9 @@
 package exnihilo.items.meshes;
 
-import exnihilo.api.items.IMesh;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
+
+import exnihilo.api.items.IMesh;
 
 public class DiamondMesh extends ItemMesh implements IMesh {
 

@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import exnihilo.config.HammerConfig;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import exnihilo.ENBlocks;
 import exnihilo.ENItems;
+import exnihilo.config.HammerConfig;
 import exnihilo.registries.helpers.Smashable;
 import exnihilo.utils.ItemInfo;
 

@@ -1,6 +1,5 @@
 package exnihilo.blocks;
 
-import exnihilo.ExNihilo;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,6 +16,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import exnihilo.ExNihilo;
 import exnihilo.blocks.tileentities.TileEntityCrucible;
 import exnihilo.data.BlockData;
 

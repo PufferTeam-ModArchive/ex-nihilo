@@ -2,7 +2,6 @@ package exnihilo.blocks;
 
 import java.util.Random;
 
-import exnihilo.ExNihilo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.ITileEntityProvider;
@@ -19,6 +18,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import exnihilo.ExNihilo;
 import exnihilo.blocks.tileentities.TileEntityLeavesInfested;
 import exnihilo.config.CrookConfig;
 import exnihilo.data.BlockData;

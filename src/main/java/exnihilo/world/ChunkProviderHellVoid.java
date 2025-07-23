@@ -2,7 +2,6 @@ package exnihilo.world;
 
 import java.util.Random;
 
-import exnihilo.config.WorldConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.world.World;
@@ -10,6 +9,8 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderHell;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+
+import exnihilo.config.WorldConfig;
 
 public class ChunkProviderHellVoid extends ChunkProviderHell {
 

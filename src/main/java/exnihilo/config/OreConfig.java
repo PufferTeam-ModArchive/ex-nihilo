@@ -1,6 +1,7 @@
 package exnihilo.config;
 
 import com.gtnewhorizon.gtnhlib.config.Config;
+
 import exnihilo.ExNihilo;
 
 @Config(modid = ExNihilo.MODID, category = "ores")

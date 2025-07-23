@@ -2,7 +2,6 @@ package exnihilo.blocks.ores;
 
 import java.util.List;
 
-import exnihilo.ExNihilo;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,6 +15,7 @@ import net.minecraft.util.IIcon;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import exnihilo.ExNihilo;
 
 public class BlockOre extends BlockFalling {
 

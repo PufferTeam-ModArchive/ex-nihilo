@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import exnihilo.api.items.IMesh;
-import exnihilo.registries.MeshRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -21,6 +19,8 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import exnihilo.api.items.IMesh;
+import exnihilo.registries.MeshRegistry;
 import exnihilo.registries.SieveRegistry;
 import exnihilo.registries.helpers.SiftingResult;
 import exnihilo.utils.ItemInfo;
@@ -55,10 +55,7 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
         public CachedSieveRecipe(List<ItemStack> variations, IMesh mesh, ItemStack base, ItemStack focus) {
             super();
             PositionedStack pstack_item = new PositionedStack((base != null) ? base : variations, 11, 3);
-            PositionedStack pstack_mesh = new PositionedStack(
-                    new ItemStack(mesh.getItem(), 1, 0),
-                    11,
-                    39);
+            PositionedStack pstack_mesh = new PositionedStack(new ItemStack(mesh.getItem(), 1, 0), 11, 39);
             pstack_item.setMaxSize(1);
             pstack_mesh.setMaxSize(1);
             this.input.add(pstack_item);
@@ -170,10 +167,8 @@ public class RecipeHandlerSieve extends TemplateRecipeHandler {
             if (!SieveRegistry
                     .registered(Block.getBlockFromItem(ingredient.getItem()), ingredient.getItemDamage(), mesh))
                 continue;
-            for (SiftingResult results : SieveRegistry.getSiftingOutput(
-                    Block.getBlockFromItem(ingredient.getItem()),
-                    ingredient.getItemDamage(),
-                    mesh)) {
+            for (SiftingResult results : SieveRegistry
+                    .getSiftingOutput(Block.getBlockFromItem(ingredient.getItem()), ingredient.getItemDamage(), mesh)) {
                 ItemInfo current = results.drop;
                 if (stored.containsKey(current)) {
                     stored.put(current, stored.get(current) + 1);

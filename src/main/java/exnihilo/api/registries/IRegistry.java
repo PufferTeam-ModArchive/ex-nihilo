@@ -6,5 +6,3 @@ public interface IRegistry<V> {
 
     V getRegistry();
 }
-
-

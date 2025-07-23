@@ -1,8 +1,8 @@
 package exnihilo;
 
-import exnihilo.config.WorldConfig;
 import net.minecraftforge.common.DimensionManager;
 
+import exnihilo.config.WorldConfig;
 import exnihilo.world.WorldProviderDefaultVoid;
 import exnihilo.world.WorldProviderEndVoid;
 import exnihilo.world.WorldProviderHellVoid;

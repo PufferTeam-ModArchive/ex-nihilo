@@ -3,7 +3,6 @@ package exnihilo.registries;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import exnihilo.api.items.IMesh;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -14,6 +13,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import exnihilo.ENBlocks;
 import exnihilo.ENItems;
 import exnihilo.ExNihilo;
+import exnihilo.api.items.IMesh;
 import exnihilo.registries.helpers.SiftingResult;
 import exnihilo.utils.ItemInfo;
 
@@ -31,8 +31,7 @@ public class SieveRegistry {
         }
     }
 
-    public static void register(Block source, int sourceMeta, Item output, int outputMeta, int rarity,
-            IMesh mesh) {
+    public static void register(Block source, int sourceMeta, Item output, int outputMeta, int rarity, IMesh mesh) {
         if (source == null || output == null) return;
         if (rarity > 0) {
             ItemInfo iteminfo = new ItemInfo(source, sourceMeta);

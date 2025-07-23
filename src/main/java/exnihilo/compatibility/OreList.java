@@ -2,15 +2,14 @@ package exnihilo.compatibility;
 
 import java.util.ArrayList;
 
-import exnihilo.config.OreConfig;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 
+import exnihilo.config.OreConfig;
 import exnihilo.registries.HammerRegistry;
 import exnihilo.registries.OreRegistry;
 import exnihilo.registries.helpers.Color;

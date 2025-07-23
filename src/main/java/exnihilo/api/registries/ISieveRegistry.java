@@ -1,6 +1,6 @@
 package exnihilo.api.registries;
 
-public interface ISieveRegistry extends IRegistryMappedList{
+public interface ISieveRegistry extends IRegistryMappedList {
 
     void register();
 }

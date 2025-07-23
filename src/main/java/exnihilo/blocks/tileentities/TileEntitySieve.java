@@ -2,8 +2,6 @@ package exnihilo.blocks.tileentities;
 
 import java.util.ArrayList;
 
-import exnihilo.api.items.IMesh;
-import exnihilo.registries.MeshRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
@@ -14,9 +12,11 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
+import exnihilo.api.items.IMesh;
 import exnihilo.network.ENPacketHandler;
 import exnihilo.network.MessageSieve;
 import exnihilo.network.VanillaPacket;
+import exnihilo.registries.MeshRegistry;
 import exnihilo.registries.SieveRegistry;
 import exnihilo.registries.helpers.SiftingResult;
 import exnihilo.utils.BlockInfo;
