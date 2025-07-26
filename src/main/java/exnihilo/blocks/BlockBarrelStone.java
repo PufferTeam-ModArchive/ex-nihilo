@@ -8,6 +8,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -37,5 +38,11 @@ public class BlockBarrelStone extends BlockBarrel {
     public void registerBlockIcons(IIconRegister register) {
         this.blockIcon = Blocks.stone.getIcon(0, 0);
         iconCompost = register.registerIcon("exnihilo:IconBarrelCompost");
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IIcon getIcon(int side, int meta) {
+        return Blocks.stone.getIcon(0, 0);
     }
 }

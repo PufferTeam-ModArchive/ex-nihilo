@@ -7,6 +7,8 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import biomesoplenty.api.content.BOPCBlocks;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import exnihilo.config.*;
 
@@ -25,6 +27,36 @@ public class Recipes {
                         new ItemStack(Blocks.planks, 1, i),
                         'y',
                         new ItemStack(Blocks.wooden_slab, 1, i));
+            }
+            if (Loader.isModLoaded("BiomesOPlenty")) {
+                for (int i = 0; i < 8; i++) {
+                    GameRegistry.addRecipe(
+                            new ItemStack(ENBlocks.BarrelBOP, 1, i),
+                            "x x",
+                            "x x",
+                            "xyx",
+
+                            'x',
+                            new ItemStack(BOPCBlocks.planks, 1, i),
+                            'y',
+                            new ItemStack(BOPCBlocks.woodenSingleSlab1, 1, i));
+                }
+                for (int i = 8; i < 15; i++) {
+                    int i1 = i;
+                    if (i > 9) {
+                        i1 = i + 1;
+                    }
+                    GameRegistry.addRecipe(
+                            new ItemStack(ENBlocks.BarrelBOP, 1, i),
+                            "x x",
+                            "x x",
+                            "xyx",
+
+                            'x',
+                            new ItemStack(BOPCBlocks.planks, 1, i1),
+                            'y',
+                            new ItemStack(BOPCBlocks.woodenSingleSlab2, 1, i - 8));
+                }
             }
             GameRegistry.addRecipe(
                     new ShapedOreRecipe(
@@ -188,21 +220,61 @@ public class Recipes {
                             'y',
                             ENItems.MeshIron));
         }
-        if (SieveConfig.enableDefaultSieveCraftingRecipe) for (int i = 0; i < 6; i++) {
-            GameRegistry.addRecipe(
-                    new ShapedOreRecipe(
-                            new ItemStack(ENBlocks.Sieve, 1, i),
-                            "x x",
-                            "xzx",
-                            "y y",
+        if (SieveConfig.enableDefaultSieveCraftingRecipe) {
+            for (int i = 0; i < 6; i++) {
+                GameRegistry.addRecipe(
+                        new ShapedOreRecipe(
+                                new ItemStack(ENBlocks.Sieve, 1, i),
+                                "x x",
+                                "xzx",
+                                "y y",
 
-                            'x',
-                            new ItemStack(Blocks.planks, 1, i),
-                            'y',
-                            "stickWood",
-                            'z',
-                            new ItemStack(Blocks.wooden_slab, 1, i)));
+                                'x',
+                                new ItemStack(Blocks.planks, 1, i),
+                                'y',
+                                "stickWood",
+                                'z',
+                                new ItemStack(Blocks.wooden_slab, 1, i)));
+            }
+
+            if (Loader.isModLoaded("BiomesOPlenty")) {
+                for (int i = 0; i < 8; i++) {
+                    GameRegistry.addRecipe(
+                            new ShapedOreRecipe(
+                                    new ItemStack(ENBlocks.SieveBOP, 1, i),
+                                    "x x",
+                                    "xzx",
+                                    "y y",
+
+                                    'x',
+                                    new ItemStack(BOPCBlocks.planks, 1, i),
+                                    'y',
+                                    "stickWood",
+                                    'z',
+                                    new ItemStack(BOPCBlocks.planks, 1, i)));
+                }
+                for (int i = 8; i < 15; i++) {
+                    int i1 = i;
+                    if (i > 9) {
+                        i1 = i + 1;
+                    }
+                    GameRegistry.addRecipe(
+                            new ShapedOreRecipe(
+                                    new ItemStack(ENBlocks.SieveBOP, 1, i),
+                                    "x x",
+                                    "xzx",
+                                    "y y",
+
+                                    'x',
+                                    new ItemStack(BOPCBlocks.planks, 1, i1),
+                                    'y',
+                                    "stickWood",
+                                    'z',
+                                    new ItemStack(BOPCBlocks.planks, 1, i1)));
+                }
+            }
         }
+
         GameRegistry.addRecipe(
                 new ShapelessOreRecipe(
                         new ItemStack(ENItems.Porcelain, 1, 0),
