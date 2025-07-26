@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -25,7 +26,6 @@ import exnihilo.ExNihilo;
 import exnihilo.api.items.IMesh;
 import exnihilo.blocks.tileentities.TileEntitySieve;
 import exnihilo.config.SieveConfig;
-import exnihilo.data.BlockData;
 import exnihilo.registries.SieveRegistry;
 import exnihilo.registries.helpers.SiftingResult;
 import exnihilo.utils.BlockInfo;
@@ -35,12 +35,22 @@ public class BlockSieve extends BlockContainer {
 
     public static final int SIEVE_RADIUS = 1;
 
-    public BlockSieve() {
+    @SideOnly(Side.CLIENT)
+    private IIcon[] woodIcon;
+
+    String[] woods;
+    String mod;
+
+    public BlockSieve(String modName, String[] woodTypes, String key) {
         super(Material.wood);
         setCreativeTab(CreativeTabs.tabDecorations);
         setHardness(2.0F);
-        setBlockName(ExNihilo.MODID + "." + BlockData.SIEVE_KEY);
-        GameRegistry.registerTileEntity(TileEntitySieve.class, ExNihilo.MODID + "." + BlockData.SIEVE_KEY);
+        setStepSound(soundTypeWood);
+        setBlockName(ExNihilo.MODID + "." + key);
+        GameRegistry.registerTileEntity(TileEntitySieve.class, ExNihilo.MODID + "." + key);
+
+        woods = woodTypes;
+        mod = modName;
     }
 
     public BlockSieve(Material material) {
@@ -49,6 +59,27 @@ public class BlockSieve extends BlockContainer {
 
     @Override
     public void registerBlockIcons(IIconRegister register) {
+        woodIcon = new IIcon[woods.length];
+
+        for (int i = 0; i < woods.length; i++) {
+            String currentWood = woods[i];
+            if (currentWood.equals("hellbark")) {
+                currentWood = "hell_bark";
+            }
+            if (currentWood.equals("dark_oak")) {
+                currentWood = "big_oak";
+            }
+            if (mod.equals("vanilla")) {
+                woodIcon[i] = register.registerIcon("minecraft:planks_" + currentWood);
+            } else if (mod.equals("bop")) {
+                woodIcon[i] = register.registerIcon("biomesoplenty:plank_" + currentWood);
+            } else if (mod.equals("thaumcraft")) {
+                woodIcon[i] = register.registerIcon("thaumcraft:planks_" + currentWood);
+            } else if (mod.equals("witchery")) {
+                woodIcon[i] = register.registerIcon("witchery:planks_" + currentWood);
+            }
+        }
+
         ENItems.MeshSilk.registerSieveRenderIcon(register);
         ENItems.MeshFlint.registerSieveRenderIcon(register);
         ENItems.MeshIron.registerSieveRenderIcon(register);
@@ -60,7 +91,7 @@ public class BlockSieve extends BlockContainer {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item item, CreativeTabs tabs, List subItems) {
-        for (int i = 0; i < 6; i++) subItems.add(new ItemStack(item, 1, i));
+        for (int i = 0; i < woods.length; i++) subItems.add(new ItemStack(item, 1, i));
     }
 
     @Override
@@ -91,6 +122,16 @@ public class BlockSieve extends BlockContainer {
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {
         return new TileEntitySieve();
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IIcon getIcon(int side, int meta) {
+        return woodIcon[meta];
+    }
+
+    public String[] getWoods() {
+        return woods;
     }
 
     @Override

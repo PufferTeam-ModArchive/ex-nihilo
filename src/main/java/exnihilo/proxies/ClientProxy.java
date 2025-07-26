@@ -48,6 +48,8 @@ public class ClientProxy extends Proxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBarrel.class, new RenderBarrel(barrel));
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.Barrel), new ItemRenderBarrel(barrel));
         MinecraftForgeClient
+                .registerItemRenderer(Item.getItemFromBlock(ENBlocks.BarrelBOP), new ItemRenderBarrel(barrel));
+        MinecraftForgeClient
                 .registerItemRenderer(Item.getItemFromBlock(ENBlocks.BarrelStone), new ItemRenderBarrel(barrel));
 
         ModelBlock block = new ModelBlock();
@@ -59,6 +61,7 @@ public class ClientProxy extends Proxy {
         ModelSieveMesh mesh = new ModelSieveMesh();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySieve.class, new RenderSieve(sieve, mesh));
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.Sieve), new ItemRenderSieve(sieve));
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ENBlocks.SieveBOP), new ItemRenderSieve(sieve));
 
         ModelCrucible crucible = new ModelCrucible();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrucible.class, new RenderCrucible(crucible));

@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,7 +28,6 @@ import exnihilo.ENItems;
 import exnihilo.ExNihilo;
 import exnihilo.blocks.tileentities.TileEntityBarrel;
 import exnihilo.config.BarrelConfig;
-import exnihilo.data.BlockData;
 import exnihilo.registries.BarrelRecipeRegistry;
 import exnihilo.registries.CompostRegistry;
 import exnihilo.registries.helpers.EntityWithItem;
@@ -42,13 +40,23 @@ public class BlockBarrel extends BlockContainer {
 
     public static IIcon iconClouds;
 
-    public BlockBarrel() {
+    @SideOnly(Side.CLIENT)
+    private IIcon[] woodIcon;
+
+    String[] woods;
+    String mod;
+
+    public BlockBarrel(String modName, String[] woodTypes, String key) {
         super(Material.wood);
         setCreativeTab(CreativeTabs.tabDecorations);
         setHardness(2.0F);
+        setStepSound(soundTypeWood);
         setBlockBounds(0.1F, 0.0F, 0.1F, 0.9F, 1.0F, 0.9F);
-        setBlockName(ExNihilo.MODID + "." + BlockData.BARREL_KEY);
-        GameRegistry.registerTileEntity(TileEntityBarrel.class, getUnlocalizedName());
+        setBlockName(ExNihilo.MODID + "." + key);
+        GameRegistry.registerTileEntity(TileEntityBarrel.class, ExNihilo.MODID + "." + key);
+
+        woods = woodTypes;
+        mod = modName;
     }
 
     public BlockBarrel(Material material) {
@@ -59,7 +67,7 @@ public class BlockBarrel extends BlockContainer {
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void getSubBlocks(Item item, CreativeTabs tabs, List subItems) {
-        for (int i = 0; i < 6; i++) subItems.add(new ItemStack(item, 1, i));
+        for (int i = 0; i < woods.length; i++) subItems.add(new ItemStack(item, 1, i));
     }
 
     @Override
@@ -187,9 +195,39 @@ public class BlockBarrel extends BlockContainer {
 
     @Override
     public void registerBlockIcons(IIconRegister register) {
-        blockIcon = Blocks.planks.getIcon(0, 0);
+        woodIcon = new IIcon[woods.length];
+
+        for (int i = 0; i < woods.length; i++) {
+            String currentWood = woods[i];
+            if (currentWood.equals("hellbark")) {
+                currentWood = "hell_bark";
+            }
+            if (currentWood.equals("dark_oak")) {
+                currentWood = "big_oak";
+            }
+            if (mod.equals("vanilla")) {
+                woodIcon[i] = register.registerIcon("minecraft:planks_" + currentWood);
+            } else if (mod.equals("bop")) {
+                woodIcon[i] = register.registerIcon("biomesoplenty:plank_" + currentWood);
+            } else if (mod.equals("thaumcraft")) {
+                woodIcon[i] = register.registerIcon("thaumcraft:planks_" + currentWood);
+            } else if (mod.equals("witchery")) {
+                woodIcon[i] = register.registerIcon("witchery:planks_" + currentWood);
+            }
+        }
+
         iconCompost = register.registerIcon(ExNihilo.MODID + ":" + "IconBarrelCompost");
         iconClouds = register.registerIcon(ExNihilo.MODID + ":" + "IconBarrelInternalClouds");
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IIcon getIcon(int side, int meta) {
+        return woodIcon[meta];
+    }
+
+    public String[] getWoods() {
+        return woods;
     }
 
     @Override

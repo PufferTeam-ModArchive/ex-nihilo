@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
 import exnihilo.ENBlocks;
+import exnihilo.blocks.BlockBarrel;
 
 public class ModelBarrel extends ModelBase {
 
@@ -19,6 +20,12 @@ public class ModelBarrel extends ModelBase {
             new ResourceLocation("exnihilo", "textures/blocks/ModelBarrelDarkOak.png"),
             new ResourceLocation("exnihilo", "textures/blocks/ModelBarrelStone.png") };
 
+    public ResourceLocation getModelTexture(String wood) {
+        String rl = "textures/blocks/ModelBarrel" + ENBlocks.getCapitalized(wood) + ".png";
+
+        return new ResourceLocation("exnihilo", rl);
+    }
+
     public final ModelRenderer bottom;
 
     public final ModelRenderer side1;
@@ -30,9 +37,13 @@ public class ModelBarrel extends ModelBase {
     public final ModelRenderer side4;
 
     public ResourceLocation getBarrelTexture(Block block, int meta) {
-        if (block == ENBlocks.Barrel) return textures[meta];
-        if (block == ENBlocks.BarrelStone) return textures[6];
-        return null;
+        if (block == ENBlocks.Barrel) {
+            return textures[meta];
+        } else if (block == ENBlocks.BarrelStone) {
+            return textures[6];
+        } else {
+            return getModelTexture(((BlockBarrel) block).getWoods()[meta]);
+        }
     }
 
     public ModelBarrel() {

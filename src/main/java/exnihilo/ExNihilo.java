@@ -43,7 +43,7 @@ import exnihilo.registries.HeatRegistry;
 import exnihilo.registries.SieveRegistry;
 import exnihilo.utils.CrookUtils;
 
-@Mod(modid = ExNihilo.MODID, name = ExNihilo.MODNAME, version = Tags.VERSION)
+@Mod(modid = ExNihilo.MODID, name = ExNihilo.MODNAME, version = Tags.VERSION, dependencies = "after:BiomesOPlenty;")
 public class ExNihilo {
 
     public static final String MODID = "exnihilo";
@@ -95,6 +95,10 @@ public class ExNihilo {
         Blocks.fire.setFireInfo(ENBlocks.Barrel, 5, 150);
         Blocks.fire.setFireInfo(ENBlocks.LeavesInfested, 5, 150);
         Blocks.fire.setFireInfo(ENBlocks.Sieve, 5, 150);
+        if (Loader.isModLoaded("BiomesOPlenty")) {
+            Blocks.fire.setFireInfo(ENBlocks.BarrelBOP, 5, 150);
+            Blocks.fire.setFireInfo(ENBlocks.SieveBOP, 5, 150);
+        }
         if (SieveConfig.enableDefaultSieveRewards) SieveRegistry.registerRewards();
         if (HammerConfig.enableDefaultHammerRewards) HammerRegistry.registerSmashables();
         if (CrucibleConfig.enableDefaultCrucibleRewards) CrucibleRegistry.registerMeltables();
@@ -107,33 +111,34 @@ public class ExNihilo {
 
     @EventHandler
     public void PostInitialize(FMLPostInitializationEvent event) {
-        OreList.registerOres();
         CrookUtils.load();
-        if (Loader.isModLoaded("IC2")) {
-            log.info("+++ - Found IC2!");
-            IC2.loadCompatibility();
+        if (!Loader.isModLoaded("materialis")) {
+            if (Loader.isModLoaded("IC2")) {
+                log.info("+++ - Found IC2!");
+                IC2.loadCompatibility();
+            }
+            if (Loader.isModLoaded("Forestry")) {
+                log.info("+++ - Found Forestry!");
+                Forestry.loadCompatibility();
+            }
+            if (Loader.isModLoaded("ThermalExpansion")) {
+                log.info("+++ - Found ThermalExpansion!");
+                ThermalExpansion.loadCompatibility();
+            }
+            if (Loader.isModLoaded("appliedenergistics2")) {
+                log.info("+++ - Found AE2!");
+                AE2.loadCompatibility();
+            }
+            if (Loader.isModLoaded("MineFactoryReloaded")) {
+                log.info("+++ - Found MineFactory Reloaded!");
+                MineFactoryReloaded.loadCompatibility();
+            }
+            if (Loader.isModLoaded("TConstruct")) {
+                log.info("+++ - Found Tinkers Construct!");
+                TinkersConstruct.loadCompatibility();
+            }
+            OreList.processOreDict();
         }
-        if (Loader.isModLoaded("Forestry")) {
-            log.info("+++ - Found Forestry!");
-            Forestry.loadCompatibility();
-        }
-        if (Loader.isModLoaded("ThermalExpansion")) {
-            log.info("+++ - Found ThermalExpansion!");
-            ThermalExpansion.loadCompatibility();
-        }
-        if (Loader.isModLoaded("appliedenergistics2")) {
-            log.info("+++ - Found AE2!");
-            AE2.loadCompatibility();
-        }
-        if (Loader.isModLoaded("MineFactoryReloaded")) {
-            log.info("+++ - Found MineFactory Reloaded!");
-            MineFactoryReloaded.loadCompatibility();
-        }
-        if (Loader.isModLoaded("TConstruct")) {
-            log.info("+++ - Found Tinkers Construct!");
-            TinkersConstruct.loadCompatibility();
-        }
-        OreList.processOreDict();
         CompostRegistry.registerOreDictAdditions(BarrelConfig.compostAdditionsOredict);
         CompostRegistry.registerNonDictAdditions(BarrelConfig.compostAdditions);
         SieveRegistry.registerOreDictAdditions(SieveConfig.sieveAdditionsOredict);

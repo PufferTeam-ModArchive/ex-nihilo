@@ -6,6 +6,9 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
+import exnihilo.ENBlocks;
+import exnihilo.blocks.BlockSieve;
+
 public class ModelSieve extends ModelBase {
 
     final ModelRenderer Leg1;
@@ -32,8 +35,18 @@ public class ModelSieve extends ModelBase {
             new ResourceLocation("exnihilo", "textures/blocks/ModelSieveAcacia.png"),
             new ResourceLocation("exnihilo", "textures/blocks/ModelSieveDarkOak.png") };
 
+    public ResourceLocation getModelTexture(String wood) {
+        String rl = "textures/blocks/ModelSieve" + ENBlocks.getCapitalized(wood) + ".png";
+
+        return new ResourceLocation("exnihilo", rl);
+    }
+
     public ResourceLocation getSieveTexture(Block block, int meta) {
-        return textures[meta];
+        if (block == ENBlocks.Sieve) {
+            return textures[meta];
+        } else {
+            return getModelTexture(((BlockSieve) block).getWoods()[meta]);
+        }
     }
 
     public ModelSieve() {

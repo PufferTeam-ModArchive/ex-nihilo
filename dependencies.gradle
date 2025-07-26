@@ -37,5 +37,7 @@ dependencies {
     devOnlyNonPublishable("com.github.GTNewHorizons:waila:1.8.4:dev")
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.7.34-GTNH:dev")
 
+    api fileTree(dir: 'libs', include: '*.jar')
+
     api("com.github.GTNewHorizons:GTNHLib:0.6.17:dev")
 }

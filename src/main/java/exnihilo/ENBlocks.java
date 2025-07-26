@@ -2,6 +2,7 @@ package exnihilo;
 
 import net.minecraft.block.Block;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import exnihilo.blocks.BlockBarrel;
 import exnihilo.blocks.BlockBarrelStone;
@@ -25,6 +26,8 @@ public class ENBlocks {
 
     public static Block Barrel;
 
+    public static Block BarrelBOP;
+
     public static Block BarrelStone;
 
     public static Block Crucible;
@@ -37,6 +40,8 @@ public class ENBlocks {
 
     public static Block Sieve;
 
+    public static Block SieveBOP;
+
     public static Block BeeTrap;
 
     public static Block BeeTrapTreated;
@@ -45,9 +50,27 @@ public class ENBlocks {
 
     public static Block EnderGravel;
 
+    public static final String[] woodTypes = new String[] { "oak", "spruce", "birch", "jungle", "acacia", "dark_oak" };
+    public static final String[] bopWoodTypes = new String[] { "sacredoak", "cherry", "dark", "fir", "ethereal",
+            "magic", "mangrove", "palm", "redwood", "willow", "pine", "hellbark", "jacaranda", "mahogany" };
+
+    public static String getCapitalized(String string) {
+        String[] stringArray = string.split("");
+        stringArray[0] = stringArray[0].toUpperCase();
+        string = String.join("", stringArray);
+
+        return string;
+    }
+
     public static void registerBlocks() {
-        Barrel = new BlockBarrel();
+        Barrel = new BlockBarrel("vanilla", woodTypes, "barrel");
         GameRegistry.registerBlock(Barrel, ItemBlockBarrel.class, "barrel");
+
+        if (Loader.isModLoaded("BiomesOPlenty")) {
+            BarrelBOP = new BlockBarrel("bop", bopWoodTypes, "bop_barrel");
+            GameRegistry.registerBlock(BarrelBOP, ItemBlockBarrel.class, "bop_barrel");
+        }
+
         BarrelStone = new BlockBarrelStone();
         GameRegistry.registerBlock(BarrelStone, ItemBlockBarrelStone.class, "barrel_stone");
         Crucible = new BlockCrucible();
@@ -58,8 +81,12 @@ public class ENBlocks {
         GameRegistry.registerBlock(Dust, "dust");
         LeavesInfested = new BlockLeavesInfested();
         GameRegistry.registerBlock(LeavesInfested, ItemBlockLeavesInfested.class, "infested_leaves");
-        Sieve = new BlockSieve();
+        Sieve = new BlockSieve("vanilla", woodTypes, "sifting_table");
         GameRegistry.registerBlock(Sieve, ItemBlockSieve.class, "sifting_table");
+        if (Loader.isModLoaded("BiomesOPlenty")) {
+            SieveBOP = new BlockSieve("bop", bopWoodTypes, "bop_sifting_table");
+            GameRegistry.registerBlock(SieveBOP, ItemBlockSieve.class, "bop_sifting_table");
+        }
         BeeTrap = new BlockBeeTrap();
         GameRegistry.registerBlock(BeeTrap, "bee_trap");
         BeeTrapTreated = new BlockBeeTrapTreated();

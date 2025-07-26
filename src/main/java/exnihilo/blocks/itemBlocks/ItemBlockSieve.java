@@ -4,18 +4,22 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import exnihilo.data.BlockData;
+import exnihilo.blocks.BlockSieve;
 
 public class ItemBlockSieve extends ItemBlock {
+
+    String[] woods;
 
     public ItemBlockSieve(Block block) {
         super(block);
         setHasSubtypes(true);
+
+        woods = ((BlockSieve) block).getWoods();
     }
 
     @Override
     public String getUnlocalizedName(ItemStack itemstack) {
-        return "exnihilo." + BlockData.SIEVE_UNLOCALIZED_NAMES[itemstack.getItemDamage()];
+        return "exnihilo.sieve." + woods[itemstack.getItemDamage()];
     }
 
     @Override
