@@ -34,7 +34,7 @@ public class ItemRenderBarrel implements IItemRenderer {
     @Override
     public void renderItem(IItemRenderer.ItemRenderType type, ItemStack item, Object... data) {
         GL11.glPushMatrix();
-        GL11.glScalef(-1.0F, -1.0F, 1.0F);
+        GL11.glScalef(-0.8F, -1.0F, 0.8F);
         switch (type) {
             case EQUIPPED -> GL11.glTranslatef(-0.5F, -1.5F, 0.5F);
             case EQUIPPED_FIRST_PERSON -> GL11.glTranslatef(0F, -1.6F, 0.6F);
